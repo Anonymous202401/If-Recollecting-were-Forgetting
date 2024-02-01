@@ -228,11 +228,11 @@ if __name__ == '__main__':
         if not os.path.exists(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
         if not os.path.exists(save_path):
-            print("计算unlearning统计数据")
+            print("Calculate unlearning statistics")
             Approximators=getapproximator(args,img_size,Dataset2recollect=Dataset2recollect)
             torch.save(Approximators, save_path)
         else:
-            print("从文件加载 approximator")
+            print("Load approximator")
             Approximators = torch.load(save_path)
 
     ########### Unlearning
