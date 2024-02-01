@@ -1,5 +1,7 @@
 import torch
 import time
+import random
+import numpy as np
 import joblib
 from utils.options import args_parser
 from models.Nets import MLP, CNNMnist, CNNCifar,Logistic,LeNet,resnet18
@@ -13,6 +15,12 @@ args = args_parser()
 
 
 def getapproximator(args,img_size,Dataset2recollect):
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+    torch.cuda.manual_seed(args.seed)
     net_t = None
     # build model
     if args.model == 'cnn' and args.dataset == 'cifar':
@@ -99,7 +107,8 @@ def getapproximator(args,img_size,Dataset2recollect):
             grad_params = [grad * scaling_factor for grad in grad_params]
         # cliped_grad_norm = torch.norm(torch.cat([grad.view(-1) for grad in grad_params]))
         # print('Cliped Grad Norm :',cliped_grad_norm)
-        t_start = time.time()    
+        torch.cuda.synchronize()
+        t_start = time.time()
         for i in range(len(dataset)): 
             net_t.zero_grad()
             HVP_i=torch.autograd.grad(grad_params, net_t.parameters(), approximator[i],retain_graph=True)
@@ -107,8 +116,10 @@ def getapproximator(args,img_size,Dataset2recollect):
                 approximator[i][j]=approximator[i][j] - (lr* (args.lr_decay**(t)) * HVP_i[j].detach())
             del HVP_i # save memory
         del loss_batch,grad_params
+        torch.cuda.synchronize()
         t_end = time.time()
-        print("Computaion Time Elapsed:  {:.2f}s \n".format(t_end - t_start))
+        
+        print("Computaion Time Elapsed:  {:.6f}s \n".format(t_end - t_start))
     
    
 

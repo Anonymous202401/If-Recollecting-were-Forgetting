@@ -7,6 +7,7 @@ matplotlib.use('Agg')
 from torch import nn, autograd
 import torch
 import time
+import os
 from utils.options import args_parser
 from torch.utils.data import DataLoader, Dataset
 from models.Nets import LogisticAdult,Logistic
@@ -33,25 +34,46 @@ class DatasetSplit(Dataset):
 def compute_hessian(args, model, Dataset2recollect, indices):
     model.train()
     loss_func = nn.CrossEntropyLoss()
-    step = 0
-    total_hessian = torch.zeros((sum(p.numel() for p in model.parameters()), sum(p.numel() for p in model.parameters()))).to(args.device)
+    # step = 840
+    step = 0 
+    # file_path = '/home/qiaoxinbao/If-recollecting-were-forgetting/Propsed/log/NU/statistics/average_hessian_lenet_fashion-mnist_120_42_step840.pth'
+    # total_hessian = torch.load(file_path)
+    total_hessian = torch.zeros((sum(p.numel() for p in model.parameters()), sum(p.numel() for p in model.parameters())))
+    total_hessian=total_hessian.to(args.device)
     # image_0, label_0, index_0 = Dataset2recollect[indices[0]]
     # total_hessian = torch.zeros_like(calc_hessian(args,loss_func(model(image_0.unsqueeze(0).to(args.device)),torch.tensor([label_0]).to(args.device)), model.parameters()))
 
 
     for i in indices:
-        t_start = time.time() 
+        
         image_i, label_i, index_i = Dataset2recollect[i]
         image_i, label_i = image_i.unsqueeze(0).to(args.device), torch.tensor([label_i]).to(args.device)
         log_probs = model(image_i)
         loss_i = loss_func(log_probs, label_i)
+        torch.cuda.synchronize()
+        t_start = time.time() 
         hessian_i = calc_hessian(args, loss_i, model.parameters())  
-        total_hessian += hessian_i.detach()  
+        torch.cuda.synchronize()
+        t_end = time.time() 
+        total_hessian += hessian_i.detach()
         del hessian_i
         step += 1
         model.zero_grad()
-        t_end = time.time() 
-        print("Calculating the Hessian of the {:3d}-th data point, Time Elapsed: {:.2f}s".format(step, t_end - t_start))
+        # print("Calculating the Hessian of the {:3d}-th data point, Time Elapsed: {:.6f}s".format(step, t_end - t_start))
+        save_path = './log/NU/statistics/average_hessian_{}_{}_{}_{}_step{}.pth'.format(args.model,args.dataset,args.epochs,args.seed,step)
+        if step % 10 == 0:
+            if not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path))
+            torch.save(total_hessian, save_path)
+        previous_save_path = './log/NU/statistics/average_hessian_{}_{}_{}_{}_step{}.pth'.format(args.model, args.dataset, args.epochs, args.seed, step - 10)
+        # delete previous chackpoints
+        if os.path.exists(previous_save_path):
+            os.remove(previous_save_path)
+            # filename = './log/NU/statistics/NU_Check_model_{}_data_{}_remove_{}_epoch_{}_seed{}.txt'.format(args.model, args.dataset, args.num_forget, args.epochs,args.seed)
+            # os.makedirs( filename, exist_ok=True)
+            # # Open a file and write the results
+            # with open( filename, 'w') as file:
+            #     file.write("Hessian computed: {}\n".format(i))
 
     # compute average hessian
     average_hessian = total_hessian / len(indices)
@@ -59,6 +81,7 @@ def compute_hessian(args, model, Dataset2recollect, indices):
         print("(NU) Hessian matrix is singular, thus a damping factor of {:.5f} ".format(args.damping_factor)  )
         average_hessian = average_hessian +args. damping_factor * torch.eye(average_hessian.size(0), device=average_hessian.device)
     average_hessian = average_hessian + args. damping_factor * torch.eye(average_hessian.size(0), device=average_hessian.device)
+
 
     return average_hessian.to(args.device)
 
@@ -102,18 +125,22 @@ def calc_hessian(args, loss, network_param):
     derivative_tensor = torch.cat([tensor.flatten().to(args.device) for tensor in first_derivative])
     derivative_tensor.to(args.device)
     num_parameters = derivative_tensor.shape[0]
-    hessian = torch.zeros(num_parameters, num_parameters).to(args.device)
-
+    hessian = torch.zeros(num_parameters, num_parameters)
+    hessian = hessian.to(args.device)
+    torch.cuda.synchronize()
+    t_start = time.time() 
     for col_ind in range(num_parameters):
         jacobian_vec = torch.zeros(num_parameters, device=args.device)
-        jacobian_vec.to(args.device)
+        jacobian_vec=jacobian_vec.to(args.device)
         jacobian_vec[col_ind] = 1.
         derivative_tensor.backward(jacobian_vec, retain_graph=True)
         hessian_col = torch.cat([param.grad.flatten().to(args.device) for param in param_list])
         hessian[:, col_ind] = hessian_col
         for param in param_list:
             param.grad.zero_()     
-
+    torch.cuda.synchronize()
+    t_end = time.time() 
+    print("Hessian Computation Time Elapsed: {:.6f}s".format( t_end - t_start))
     return hessian
 
 
