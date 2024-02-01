@@ -175,19 +175,17 @@ if __name__ == '__main__':
 
     if not os.path.exists(save_path2):
         if not os.path.exists(save_path):
-            print("(IJ) 计算unlearning统计数据")
+            print("(IJ) Calculate unlearning statistics")
             average_hessian =compute_hessian(args,copy.deepcopy(net).to(args.device),  Dataset2recollect, all_indices)
             # Compute the inverse of the average Hessian
             inv_average_hessian = torch.inverse(average_hessian)
-            # 定义保存文件的路径
             save_path = './log/IJ/statistics/inv_average_hessian_{}_{}_{}_{}_{}.pth'.format(args.model,args.dataset, args.num_forget,args.epochs,args.seed)
-            # 保存 inv_average_hessian 到文件
             torch.save(inv_average_hessian, save_path)
         else:
-            print("(IJ) 从文件加载 inv_average_hessian, 无需计算Hessian")
+            print("(IJ) Load inv_average_hessian, No need to compute Hessian")
             inv_average_hessian =torch.load(save_path).to(args.device)
     else:
-        print("从文件加载 average_hessian_all,无需计算Hessian")
+        print("Load average_hessian_all, No need to compute算Hessian")
         average_hessian= torch.load(save_path2)
         # average_hessian = average_hessian + 0.01 * torch.eye(average_hessian.size(0), device=average_hessian.device)
         print('average_hessian device',average_hessian.device)
@@ -195,8 +193,7 @@ if __name__ == '__main__':
         
 
     ########### Unlearning
-    print("(IJ) 开始unlearning")
-    # 加载 inv_average_hessian
+    print("(IJ) Begin unlearning")
 
     average_hessian = average_hessian.to('cpu')
     inv_average_hessian = torch.inverse(average_hessian)
