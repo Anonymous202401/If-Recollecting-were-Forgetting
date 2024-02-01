@@ -1,5 +1,3 @@
-Note that calculating the Hessian of NS and NU takes a lot of time, so if resources are limited, please download our pre-computed Hessian directly from the ./Storage.
-
 
 ## Proposed Method
     python3 -u main_proposed.py --model logistic --dataset mnist  --epochs 50 --num_dataset 1000 --batch_size 1000 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
