@@ -169,13 +169,11 @@ if __name__ == '__main__':
     if not os.path.exists(os.path.dirname(save_path)):
         os.makedirs(os.path.dirname(save_path))
     if not os.path.exists(save_path):
-        print("计算unlearning统计数据")
+        print("Calculate unlearning statistics")
         average_hessian_all=compute_hessian(args,copy.deepcopy(net).to(args.device),  Dataset2recollect, all_indices)
-        # 定义保存文件的路径
-        # 保存 inv_average_hessian 到文件
         torch.save(average_hessian_all, save_path)
     else:
-        print("从文件加载 average_hessian_all,无需计算Hessian")
+        print("Load average_hessian_all, No Need to compute Hessian")
         average_hessian_all = torch.load(save_path)
         # average_hessian_all = average_hessian_all + 0.01 * torch.eye(average_hessian_all.size(0), device=average_hessian_all.device)
 
@@ -183,7 +181,7 @@ if __name__ == '__main__':
 
 
     ########### Unlearning
-    print("(NU) 开始unlearning")
+    print("(NU) Begin unlearning")
     average_hessian_forget=compute_hessian(args,copy.deepcopy(net).to(args.device),  Dataset2recollect, indices_to_unlearn)
     average_hessian_all = average_hessian_all.to(args.device)
     average_hessian_forget= average_hessian_forget.to(args.device)
@@ -273,18 +271,3 @@ if __name__ == '__main__':
         lossfile.write(sloss)
         lossfile.write('\n')
     lossfile.close()
-
-    # # Compute loss to Evaluate_Pearson
-    # all_indices = list(range(len(dataset_test)))
-    # indices_to_test = random.sample(all_indices, k=100)
-    # _, test_loss_list = test_per_img(net, dataset_test, args,indices_to_test=indices_to_test)
-    # rootpath = './log/NU/lossforget/'
-    # if not os.path.exists(rootpath):
-    #     os.makedirs(rootpath)    
-    # lossfile = open(rootpath + 'NU_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    # args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    # for loss in test_loss_list:
-    #     sloss = str(loss)
-    #     lossfile.write(sloss)
-    #     lossfile.write('\n')
-    # lossfile.close()
