@@ -227,15 +227,15 @@ if __name__ == '__main__':
         if not os.path.exists(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
         if not os.path.exists(save_path):
-            print("计算unlearning统计数据")
+            print("Calculate unlearning statistics")
             Approximators=getapproximator(args,img_size,Dataset2recollect=Dataset2recollect)
             torch.save(Approximators, save_path)
         else:
-            print("从文件加载 approximator")
+            print("Load approximator")
             Approximators = torch.load(save_path)
 
     ########### Unlearning
-    print("(Proposed) 开始unlearning")
+    print("(Proposed) Begin unlearning")
     unlearn_t_start = time.time()
     model_params = net.state_dict()
     # print(model_params)
@@ -325,39 +325,3 @@ if __name__ == '__main__':
         lossfile.write('\n')
     lossfile.close()
 
-
-    # # Compute loss to Evaluate_Spearman
-    # all_indices = list(range(len(dataset_test)))
-    # indices_to_test = random.sample(all_indices, k=100)
-    # _, test_loss_list = test_per_img(net, dataset_test, args,indices_to_test=indices_to_test)
-    # rootpath = './log/Proposed/lossforget/'
-    # if not os.path.exists(rootpath):
-    #     os.makedirs(rootpath)  
-    # lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    # args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    # for loss in test_loss_list:
-    #     sloss = str(loss)
-    #     lossfile.write(sloss)
-    #     lossfile.write('\n')
-    # lossfile.close()
-    # # Test
-    # batch_idx_list_per_batch0=info[0]
-    # batch_idx_list_per_batch1=info[1]
-    # batch_idx_list_per_batch2=info[2]
-    # batch_idx_list_per_batch3=info[3]
-    # print("Forget: ",indices_to_unlearn)
-    # b1=batch_idx_list_per_batch0["batch_idx_list"]
-    # b2=batch_idx_list_per_batch1["batch_idx_list"]
-    # b3=batch_idx_list_per_batch2["batch_idx_list"]
-    # b4=batch_idx_list_per_batch3["batch_idx_list"]
-    # print(b1)
-    # print(b2)
-    # print(b3)
-    # print(b4)
-    # # exist same number?
-    # intersection = set(m) & set(l)
-    # if intersection:
-    #     print("same")
-    #     print("same lenth:", len(intersection))
-    # else:
-    #     print("not same")
