@@ -1,3 +1,6 @@
+This repositories is the supplementary code of the paper "Online Unlearning via Hessian-Free Recollection of Individual Data Statistics"
+
+
 Note that when executing the methods of NS and IJ, storing the Hessian for CNN and LeNet requires 1.78GB and 14.18GB of space, please make sure you have enough hard disk space to save the corresponding results.
 
 We recommend executing the NS method in preference to IJ because IJ can use the results of NS to calculate and thus significantly reduce the computing time.
