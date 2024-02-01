@@ -31,7 +31,7 @@ class DatasetSplit(Dataset):
         return image, label, self.all_indices[item]
 
 
-def train(step,args, net, dataset,learning_rate):
+def train(step,args, net, dataset,learning_rate,info):
 
     # Ensure reproducibility of results, which may lead to a slight decrease in performance as it disables some optimizations.
     # torch.backends.cudnn.benchmark = False
@@ -52,7 +52,6 @@ def train(step,args, net, dataset,learning_rate):
     dataloader = DataLoader(DatasetSplit(dataset), batch_size=args.batch_size, shuffle=True)
     
     loss=0
-    info= []
     for batch_idx, (images, labels, indices) in enumerate(dataloader):
         optimizer.zero_grad()
         net.eval()
@@ -74,15 +73,5 @@ def train(step,args, net, dataset,learning_rate):
         print("     Step {:3d}     Batch {:3d}, Batch Size: {:3d}, Trainning Loss: {:.2f}".format(step,batch_idx,dataloader.batch_size,loss))
         step +=1
 
-        path1 = "./Checkpoint/model_{}_checkpoints". format(args.model)
-        file_name = "check_{}_remove_{}_{}_seed{}.dat". format(args.dataset, args.num_forget, args.epochs, args.seed)
-        file_path = os.path.join(path1, file_name)
-        if not os.path.exists(path1):
-            os.makedirs(path1)
-        # 以二进制追加模式打开文件
-        with open(file_path, 'ab') as file:
-            joblib.dump(info, file)
-        file.close()
-        
-    return net.state_dict(), loss, lr, Dataset2recollect,step
+    return net.state_dict(), loss, lr, Dataset2recollect,step,info
 

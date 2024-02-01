@@ -34,6 +34,11 @@ def train(step,args, net, dataset,learning_rate,indices_to_unlearn=[]):
     # Ensure reproducibility of results, which may lead to a slight decrease in performance as it disables some optimizations.
     # torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+    torch.cuda.manual_seed(args.seed)
 
     args = args
     loss_func = nn.CrossEntropyLoss()

@@ -4,6 +4,7 @@
 
 import torch
 from torch import nn
+import random
 import numpy as np
 import torch.nn.functional as F
 from utils.options import args_parser
@@ -23,36 +24,27 @@ class DatasetSplit(Dataset):
         return image, label, self.all_indices[item]
 
 def test_img(net_g, datatest, args):
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+    torch.cuda.manual_seed(args.seed)
+
     net_g.eval()
+    net_g.to(args.device)
     # testing
     total = 0
     test_loss = 0
     correct = 0
     data_loader = DataLoader(DatasetSplit(datatest), batch_size=args.bs)
     l = len(data_loader)
-    # if args.dataset == 'utk':
-    #     for  (data, target, indices) in data_loader:
-    #         with torch.no_grad():
-    #             if torch.cuda.is_available() and args.gpu != -1:
-    #                 data, target = data.cuda(args.device), target.cuda(args.device)
-    #             else:
-    #                 data, target = data.cpu(), target.cpu()
-                
-    #             log_probs = net_g(data)
-    #             # sum up batch loss
-    #             test_loss += F.cross_entropy(log_probs, target, reduction='sum').item()
-    #             # The class with the highest probability is what we choose as prediction
-    #             _, predicted = torch.max(log_probs.data, 1)
-    #             total += target.size(0)
-    #             correct += (predicted == target).sum().item()
-    #             print(100 * correct / total)          
     for idx, (data, target, indices) in enumerate(data_loader):
         with torch.no_grad():
-            if torch.cuda.is_available() and args.gpu != -1:
-                data, target = data.cuda(args.device), target.cuda(args.device)
-            else:
-                data, target = data.cpu(), target.cpu()
-            
+            # if torch.cuda.is_available() and args.gpu != -1:
+            #     data, target = data.to(args.device), target.to(args.device)
+            # else:
+            #     data, target = data.cpu(), target.cpu()
+            data, target = data.to(args.device), target.to(args.device)
             log_probs = net_g(data)
             # sum up batch loss
             test_loss += F.cross_entropy(log_probs, target, reduction='sum').item()
@@ -64,7 +56,7 @@ def test_img(net_g, datatest, args):
     # print(test_loss)
     return accuracy, test_loss
 
-def test_per_img(net_g, dataset, args, indices_to_unlearn):
+def test_per_img(net_g, dataset, args, indices_to_test):
     net_g.eval()
     # testing
     test_loss_list = []
@@ -72,14 +64,14 @@ def test_per_img(net_g, dataset, args, indices_to_unlearn):
     sample_losses=0
     data_loader = DataLoader(DatasetSplit(dataset), batch_size=len(dataset), shuffle=False)
     for idx, (data, target,indices) in enumerate(data_loader):
-        indices_to_unlearn = [i for i in range(len(indices)) if indices[i] in indices_to_unlearn]
-        if len(indices_to_unlearn) == 0:
+        indices_to_test = [i for i in range(len(indices)) if indices[i] in indices_to_test]
+        if len(indices_to_test) == 0:
             # Skip empty batch
             continue
         if torch.cuda.is_available() and args.gpu != -1:
-            data, target = data[indices_to_unlearn].cuda(args.device), target[indices_to_unlearn].cuda(args.device)
+            data, target = data[indices_to_test].cuda(args.device), target[indices_to_test].cuda(args.device)
         else:
-            data, target = data[indices_to_unlearn].cpu(), target[indices_to_unlearn].cpu()
+            data, target = data[indices_to_test].cpu(), target[indices_to_test].cpu()
         if data.numel() == 0:
     # Skip empty data
             continue
@@ -94,4 +86,6 @@ def test_per_img(net_g, dataset, args, indices_to_unlearn):
 
     accuracy = 100.00 * correct / len(data_loader.dataset)
     return accuracy, test_loss_list 
+
+
 

@@ -33,8 +33,13 @@ class DatasetSplit(Dataset):
 def train(step,args, net, dataset,learning_rate):
 
     torch.backends.cudnn.deterministic = True
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+    torch.cuda.manual_seed(args.seed)
 
-    args = args
+
     loss_func = nn.CrossEntropyLoss()
     lr=learning_rate
     optimizer = torch.optim.SGD(net.parameters(), lr=lr)
