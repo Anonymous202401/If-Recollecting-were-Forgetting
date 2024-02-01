@@ -14,10 +14,6 @@ from Evaluate_CKA import Evaluate_CKATest
 
 
 args = args_parser()
-# Evaluate_ScatterTEST(args)
-# Evaluate_EuclideanTEST(args)
-# Evaluate_PearsonTEST(args)
-# Evaluate_CKATest
 Evaluate_Pearson(args)
 Evaluate_Scatter(args)
 Evaluate_Euclidean(args)
