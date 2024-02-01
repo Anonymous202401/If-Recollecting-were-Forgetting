@@ -1,3 +1,6 @@
+Note that when executing the methods of NS and IJ, calculating the Hessian for CNN and LeNet requires 1.78GB and 14.18GB of space, please make sure you have enough hard disk space to save the corresponding results.
+We recommend executing the NS method in preference to IJ because IJ can use the results of NS to calculate and thus significantly reduce the computing time.
+
 
 ## Proposed Method
     python3 -u main_proposed.py --model logistic --dataset mnist  --epochs 50 --num_dataset 1000 --batch_size 1000 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
