@@ -13,4 +13,5 @@ from Evaluate_CKA import Evaluate_CKATest
 
 args = args_parser()
 Evaluate_Euclidean(args)
+Evaluate_EuclideanTEST(args)
 Evaluate_CKA(args)
