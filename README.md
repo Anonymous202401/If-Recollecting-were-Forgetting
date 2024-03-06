@@ -32,7 +32,7 @@ We recommend executing the NS method in preference to IJ because IJ can use the 
     python3 -u main_retrain.py --model lenet --dataset fashion-mnist --epochs 30 --num_dataset 4000 --batch_size 256  --num_forget 400 --lr 0.5 --clip 0.5  --gpu 7  --seed 42
 
 ## Evaluation
-Please note that the evaluation results can only be saved in "./result" after both NS, IJ, and our method have completed data removal. Otherwise, only the results of our method will be printed.
+Please note that the evaluation results can only be saved in "./result" when all NS, IJ, and our method have completed data removal. Otherwise, only the results of our method will be printed.
 
     python3 -u main_eva.py --model logistic --dataset mnist  --epochs 50 --num_dataset 1000 --batch_size 1000 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
     python3 -u main_eva.py --model cnn --dataset mnist  --epochs 20 --num_dataset 1000 --batch_size 64 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
