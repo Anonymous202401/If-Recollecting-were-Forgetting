@@ -74,7 +74,7 @@ def compute_gradient_unlearn(args, model, forget_dataset):
         gradient_unlearn += torch.cat([param.grad.view(-1) for param in model.parameters()])
         model.zero_grad()
 
-    # 计算平均梯度
+    # compute average gradient
     gradient_list = gradient_unlearn 
 
     return gradient_list
