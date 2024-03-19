@@ -18,8 +18,6 @@ from utils.Approximator_for_celeba import  getapproximator_celeba
 from utils.options import args_parser
 from models.Update import  train
 from models.Nets import MLP, CNNMnist, CNNCifar,Logistic,LeNet,resnet18,FashionCNN4
-from models.resnetutk import resnet18utk
-from models.resnetck import resnet18ck
 from utils.subset import reduce_dataset_size
 from torch.utils.data import Subset
 from models.test import test_img, test_per_img
@@ -67,38 +65,6 @@ if __name__ == '__main__':
                                               transform=trans_fashion_mnist)
         dataset_test  = datasets.FashionMNIST('./data/fashion-mnist', train=False, download=True,
                                               transform=trans_fashion_mnist)
-    
-    elif args.dataset == 'fer':
-        data_dir = './data/fer2013/'
-        normalize = transforms.Normalize(
-                mean=[0.4914, 0.4822, 0.4465],
-                std=[0.2023, 0.1994, 0.2010],
-            )
-        # define transforms
-        transform = transforms.Compose([
-            transforms.Resize((224,224)),
-            transforms.ToTensor(),
-            transforms.RandomHorizontalFlip(p=0.2),
-            normalize,
-        ])
-        dataset_train  = datasets.ImageFolder(root=data_dir+'train',transform=transform)
-        dataset_test = datasets.ImageFolder(root=data_dir+'test',transform=transform)
-    elif args.dataset == 'utk':
-        transform_train = transforms.Compose([
-            transforms.Resize(size=128),
-            transforms.RandomCrop(104),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize( [0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-        ])
-        transform_test = transforms.Compose([
-            transforms.Resize(size=128),
-            transforms.CenterCrop(size=104),
-            transforms.ToTensor(),
-            transforms.Normalize( [0.5, 0.5, 0.5],[0.5, 0.5, 0.5])
-        ])
-        dataset_train = ImageFolder('data/utk/utk_races/train/', transform=transform_train)
-        dataset_test = ImageFolder('data/utk/utk_races/test/', transform=transform_test)
     elif args.dataset == 'celeba':
         args.num_classe = 2
         args.bs = 64
@@ -140,10 +106,6 @@ if __name__ == '__main__':
         net = LeNet().to(args.device)
     elif args.model == 'resnet18' and args.dataset == 'celeba':
         net = resnet18(num_classes=2).to(args.device)
-    elif args.model == 'resnet18' and args.dataset == 'fer':
-        net = resnet18ck().to(args.device) 
-    elif args.model == 'resnet18' and args.dataset == 'utk':
-        net = resnet18utk().to(args.device) 
     elif args.model == 'mlp':
         len_in = 1
         for x in img_size:
