@@ -16,7 +16,6 @@ from utils.IJ import compute_hessian,compute_gradient_unlearn
 from utils.options import args_parser
 from models.Update_NU import  train
 from models.Nets import MLP, CNNMnist, CNNCifar,LeNet,Logistic
-
 from utils.subset import reduce_dataset_size
 from models.test import test_img,test_per_img
 from torch.utils.data import Subset
@@ -185,7 +184,7 @@ if __name__ == '__main__':
             print("(IJ) Load inv_average_hessian, No need to compute Hessian")
             inv_average_hessian =torch.load(save_path).to(args.device)
     else:
-        print("Load average_hessian_all, No need to compute算Hessian")
+        print("Load average_hessian_all, No need to compute Hessian")
         average_hessian= torch.load(save_path2)
         # average_hessian = average_hessian + 0.01 * torch.eye(average_hessian.size(0), device=average_hessian.device)
         print('average_hessian device',average_hessian.device)
