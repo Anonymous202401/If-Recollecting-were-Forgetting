@@ -24,6 +24,7 @@ from models.test import test_img, test_per_img
 import utils.loading_data as dataset
 import shutil
 import joblib
+from torchvision.models import resnet18
 
 if __name__ == '__main__':
 
@@ -106,6 +107,8 @@ if __name__ == '__main__':
         net = LeNet().to(args.device)
     elif args.model == 'resnet18' and args.dataset == 'celeba':
         net = resnet18(num_classes=2).to(args.device)
+    elif args.model == 'resnet18' and args.dataset == 'cifar':
+        net = resnet18(pretrained=True).to(args.device)
     elif args.model == 'mlp':
         len_in = 1
         for x in img_size:
