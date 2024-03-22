@@ -5,6 +5,7 @@ from models.Nets import MLP, CNNMnist, CNNCifar,Logistic,LeNet,resnet18
 import torch
 import os
 import torch
+from torchvision.models import resnet18
 
 
 def getapproximator_celeba(args,img_size,Dataset2recollect,indices_to_unlearn):
@@ -19,6 +20,8 @@ def getapproximator_celeba(args,img_size,Dataset2recollect,indices_to_unlearn):
         net_t = LeNet().to(args.device)
     elif args.model == 'resnet18' and args.dataset == 'celeba':
         net_t = resnet18(num_classes=2).to(args.device)
+    elif args.model == 'resnet18' and args.dataset == 'cifar':
+        net = resnet18(pretrained=True).to(args.device)
     elif args.model == 'mlp':
         len_in = 1
         for x in img_size:
