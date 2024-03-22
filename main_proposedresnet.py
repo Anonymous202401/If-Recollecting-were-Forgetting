@@ -183,7 +183,7 @@ if __name__ == '__main__':
     # ########### Compute unlearning statistics
     # print("Forget: ",indices_to_unlearn)
     save_path = './log/Proposed/statistics/Approximators_all_{}_{}_{}_{}.pth'.format(args.model,args.dataset,args.epochs,args.seed)
-    if args.dataset in ['celeba', 'utk', 'fer']:
+    if args.dataset in ['celeba', 'cifar']:
         Approximators=getapproximator_celeba(args,img_size,Dataset2recollect=Dataset2recollect,indices_to_unlearn=indices_to_unlearn)
     else:
         if not os.path.exists(os.path.dirname(save_path)):
