@@ -9,6 +9,10 @@ We recommend executing the NS method in preference to IJ because IJ can use the 
     python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 30 --num_dataset 50000 --batch_size 512 --num_forget  5000 --lr 0.005 --clip 10  --gpu 0  --seed 930
     python3 -u main_retain.py --model resnet18 --dataset cifar  --epochs 30 --num_dataset 50000 --batch_size 512 --num_forget  5000 --lr 0.005 --clip 10  --gpu 0  --seed 930
 
+    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  5000 --lr 0.005 --clip 10  --gpu 0  --seed 930
+    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  5000 --lr 0.005 --clip 10  --gpu 0  --seed 930
+
+
 ## Proposed Method
     python3 -u main_proposed.py --model logistic --dataset mnist  --epochs 50 --num_dataset 1000 --batch_size 1000 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
     python3 -u main_proposed.py --model cnn --dataset mnist  --epochs 20 --num_dataset 1000 --batch_size 64 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
