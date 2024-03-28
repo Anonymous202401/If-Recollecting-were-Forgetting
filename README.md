@@ -22,8 +22,8 @@ We recommend executing the NS method in preference to IJ because IJ can use the 
 
 It is important to highlight the challenges associated with evaluating the prior studies NS and IJ within the rebuttal period, primarily due to their high complexity requirements and the more restrictive assumptions made. 
 Hence, we instead use the following baseline methods:
-1. ***FineTune:** In case of finetuning, the original learned model is finetuned on the remaining dataset $D_r$.* 
-2. ***NegGrad**: In case of gradient ascent, the learned model is finetuned using negative of the models gradients on the forgetting dataset $D_f$.*
+1. ***FineTune:** In case of finetuning, the original learned model is finetuned on the remaining dataset.* 
+2. ***NegGrad**: In case of gradient ascent, the learned model is finetuned using negative of the models gradients on the forgetting dataset.*
 
 
 
