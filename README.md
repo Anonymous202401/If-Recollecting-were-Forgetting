@@ -6,17 +6,17 @@ Note that when executing the methods of NS and IJ, storing the Hessian for CNN a
 We recommend executing the NS method in preference to IJ because IJ can use the results of NS to calculate and thus significantly reduce the computing time.
 
 ## Additional Experiments (Rebuttal)
-    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  500 --lr 0.005 --clip 10 --regularization 1e-2 --lr_decay 0.99995 --gpu 0  --seed 930
-    python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  500 --lr 0.005 --clip 10 --regularization 1e-2 --gpu 0 --lr_decay 0.99995 --seed 930
-    python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  500 --lr 0.005 --clip 10 --regularization 1e-2 --gpu 0 --lr_decay 0.99995 --seed 930
-    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  500 --lr 0.005 --clip 10 --regularization 1e-2 --lr_decay 0.99995 --gpu 0  --seed 930
+    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 1  --seed 930
+    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 2  --seed 930
+    python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 3  --seed 930
+    python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 4  --seed 930
+    python3 -u main_eva.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 5  --seed 930
 
-    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  5000 --lr 0.005 --clip 10 --regularization 1e-2 --lr_decay 0.99995 --gpu 0  --seed 930
-    python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  5000 --lr 0.005 --clip 10 --regularization 1e-2 --gpu 0 --lr_decay 0.99995 --seed 930
-    python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  5000 --lr 0.005 --clip 10 --regularization 1e-2 --gpu 0 --lr_decay 0.99995 --seed 930
-    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 60 --num_dataset 50000 --batch_size 1024 --num_forget  5000 --lr 0.005 --clip 10 --regularization 1e-2 --lr_decay 0.99995 --gpu 0  --seed 930
-
-
+    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  5000 --lr 0.001 --clip 10  --gpu 1  --seed 930
+    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  5000 --lr 0.001 --clip 10  --gpu 2  --seed 930
+    python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  5000 --lr 0.001 --clip 10  --gpu 3  --seed 930
+    python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  5000 --lr 0.001 --clip 10  --gpu 4  --seed 930
+    python3 -u main_eva.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  5000 --lr 0.001 --clip 10  --gpu 5  --seed 930
 
 ## Proposed Method
     python3 -u main_proposed.py --model logistic --dataset mnist  --epochs 50 --num_dataset 1000 --batch_size 1000 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
