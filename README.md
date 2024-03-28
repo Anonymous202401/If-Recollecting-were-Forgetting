@@ -7,7 +7,7 @@ We recommend executing the NS method in preference to IJ because IJ can use the 
 
 ## Additional Experiments (Rebuttal)
 
-it is important to highlight the challenges associated with evaluating the prior studies NS and IJ within the rebuttal period, primarily due to their high complexity requirements and the more restrictive assumptions made. 
+It is important to highlight the challenges associated with evaluating the prior studies NS and IJ within the rebuttal period, primarily due to their high complexity requirements and the more restrictive assumptions made. 
 Hence, we instead use the following baseline methods:
 
     python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 1  --seed 930
