@@ -62,15 +62,50 @@ def Evaluate_EuclideanTEST(args):
     # Load model parameters
     proposed_model_path = rootpath + '/Proposed/Model/Proposed_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(args.model,args.dataset, args.num_forget,args.epochs,args.seed)
     retrain_model_path = rootpath + '/Retrain/Model/Retrain_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(args.model,args.dataset, args.num_forget,args.epochs,args.seed)
+    finetune_model_path = rootpath + '/Finetune/Model/Finetune_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(args.model,args.dataset, args.num_forget,args.epochs,args.seed)
+    neggrad_model_path = rootpath + '/NegGrad/Model/NegGrad_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(args.model,args.dataset, args.num_forget,args.epochs,args.seed)
+
 
     proposed_model_state_dict = torch.load(proposed_model_path)
-    retrain_model_state_dict = torch.load(retrain_model_path)
+    retrain_model_state_dict= torch.load(retrain_model_path)
+    finetune_model_state_dict = torch.load(finetune_model_path)
+    neggrad_model_state_dict = torch.load(neggrad_model_path)
 
     # Move the model parameters to GPU
     proposed_model_weights = torch.cat([param.view(-1) for param in proposed_model_state_dict.values()])
     retrain_model_weights = torch.cat([param.view(-1) for param in retrain_model_state_dict.values()])
+    finetune_model_weights = torch.cat([param.view(-1) for param in finetune_model_state_dict.values()])
+    neggrad_model_weights = torch.cat([param.view(-1) for param in neggrad_model_state_dict.values()])
+
+
+
+    proposed_model_weights = proposed_model_weights.to('cpu')
+    retrain_model_weights =retrain_model_weights.to('cpu')
+    finetune_model_weights = finetune_model_weights.to('cpu')
+    neggrad_model_weights = neggrad_model_weights.to('cpu')
+
 
     # Calculate L2 norm difference
     l2_norm_diff_proposed = torch.norm(proposed_model_weights - retrain_model_weights, 2)
+    l2_norm_diff_finetune = torch.norm(finetune_model_weights - retrain_model_weights, 2)
+    l2_norm_diff_neggrad = torch.norm(neggrad_model_weights - retrain_model_weights, 2)
+
+
 
     print("(Proposed) L2 norm difference:", l2_norm_diff_proposed.item())
+    print("(Finetune) L2 norm difference:", l2_norm_diff_finetune.item())
+    print("(NegGrad) L2 norm difference:", l2_norm_diff_neggrad.item())
+
+
+    # save evaluation
+    rootpath = './results/Euclidean/'
+    filename = 'Evaluate_Euclidean_model_{}_data_{}_remove_{}_epoch_{}_seed{}.txt'.format(args.model, args.dataset, args.num_forget, args.epochs,args.seed)
+    output_file_path = os.path.expanduser(os.path.join(rootpath, filename))
+    os.makedirs(rootpath, exist_ok=True)
+    # Open a file and write the results
+    with open(output_file_path, 'w') as file:
+        file.write("(Proposed) L2 norm difference: {}\n".format(l2_norm_diff_proposed.item()))
+        file.write("(Finetune) L2 norm difference: {}\n".format(l2_norm_diff_finetune.item()))
+        file.write("(NegGrad) L2 norm difference: {}\n".format(l2_norm_diff_neggrad.item()))
+
+    print("Euclidean Distance saved to:", output_file_path)
