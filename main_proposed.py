@@ -166,6 +166,22 @@ if __name__ == '__main__':
         acc_test.append(acc_t.item())
         loss_test.append(loss_t)
 
+    all_indices_train = list(range(len(dataset_train)))
+    indices_to_unlearn = random.sample(all_indices_train, k=args.num_forget)
+
+    # Save Forget loss of Original Mode
+    _, test_loss_list = test_per_img(net, dataset_train, args,indices_to_test=indices_to_unlearn)
+    rootpath = './log/Original/lossforget/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)    
+    lossfile = open(rootpath + 'Original_lossfile_model_{}_data_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget,args.epochs, args.seed), 'w')
+    for loss in test_loss_list:
+        sloss = str(loss)
+        lossfile.write(sloss)
+        lossfile.write('\n')
+    lossfile.close()
+
     # ########### Compute unlearning statistics
 
     # load file
@@ -203,6 +219,12 @@ if __name__ == '__main__':
             Approximator_proposed[j] += Approximators[idx][j]
     for j, param in enumerate(net.parameters()):
         param.data += Approximator_proposed[j]
+    # for j, (name, param) in enumerate(net.named_parameters()):
+    #     model_params[name] += Approximator_proposed[j]
+    # net.load_state_dict(model_params)
+    # for idx in indices_to_unlearn:
+    #     for j, param in enumerate(net.parameters()):
+    #         param.data += Approximators[idx][j]
     torch.cuda.synchronize()
     unlearn_t_end = time.time()
 
@@ -265,4 +287,16 @@ if __name__ == '__main__':
         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
     
 
+    # Compute loss to Evaluate_Spearman
+    _, test_loss_list = test_per_img(net, dataset_train, args,indices_to_test=indices_to_unlearn)
+    rootpath = './log/Proposed/lossforget/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)  
+    lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    for loss in test_loss_list:
+        sloss = str(loss)
+        lossfile.write(sloss)
+        lossfile.write('\n')
+    lossfile.close()
 
