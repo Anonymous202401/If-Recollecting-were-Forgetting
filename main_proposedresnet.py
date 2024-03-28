@@ -17,7 +17,8 @@ from utils.Approximator import getapproximator
 from utils.Approximator_for_celeba import  getapproximator_celeba
 from utils.options import args_parser
 from models.Update import  train
-from models.Nets import MLP, CNNMnist, CNNCifar,Logistic,LeNet,resnet18,FashionCNN4
+from models.Nets import MLP, CNNMnist, CNNCifar,Logistic,LeNet,FashionCNN4
+# resnet18
 from utils.subset import reduce_dataset_size
 from torch.utils.data import Subset
 from models.test import test_img, test_per_img
@@ -152,6 +153,7 @@ if __name__ == '__main__':
         loss_test.append(loss_t)
         # load file
         path1 = "./Checkpoint/Resnet/model_{}_checkpoints". format(args.model)
+        # path1 = "../../../data/sda2/qiaoxinbao/Resnet/model_{}_checkpoints". format(args.model)
         file_name = "check_{}_remove_{}_{}_seed{}_iter_{}.dat". format(args.dataset, args.num_forget,args.epochs,args.seed,iter)
         file_path = os.path.join(path1, file_name)
         if not os.path.exists(os.path.dirname(file_path)):
@@ -160,34 +162,65 @@ if __name__ == '__main__':
         del info 
          
 
-
     ########### Save
-    # save original model
-    rootpath = './log/Original/Model/'
-    if not os.path.exists(rootpath):
-        os.makedirs(rootpath)
-    torch.save(net.state_dict(),  rootpath+ 'Original_model_{}_data_{}_epoch_{}_seed{}.pth'.format(args.model,args.dataset,args.epochs,args.seed))
-
-    # Compute  loss of original model on per test sample to Evaluate_Spearman
     all_indices_train = list(range(len(dataset_train)))
     indices_to_unlearn = random.sample(all_indices_train, k=args.num_forget)
-    _, test_loss_list = test_per_img(net, dataset_train, args,indices_to_test=indices_to_unlearn)
+    remaining_indices = list(set(all_indices_train) - set(indices_to_unlearn))
+    forget_dataset = Subset(dataset_train, indices_to_unlearn)
+    remain_dataset = Subset(dataset_train, remaining_indices)
+    
+    ##### Compute original loss/acc on forget
+    # loss
+    forget_acc_list, forget_loss_list = test_img(net, forget_dataset, args)
     rootpath = './log/Original/lossforget/'
     if not os.path.exists(rootpath):
-        os.makedirs(rootpath)    
-    lossfile = open(rootpath + 'Original_lossfile_model_{}_data_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget,args.epochs, args.seed), 'w')
-    for loss in test_loss_list:
-        sloss = str(loss)
-        lossfile.write(sloss)
-        lossfile.write('\n')
+        os.makedirs(rootpath)  
+    lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    lossfile.write(str(forget_loss_list))
     lossfile.close()
+    # acc 
+    rootpath = './log/Original/accforget/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)  
+    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    accfile.write(str(forget_acc_list))
+    accfile.close()
+
+    ##### Compute original loss/acc on remain
+    # loss
+    remain_acc_list, remain_loss_list = test_img(net, remain_dataset , args)
+    rootpath = './log/Original/lossremain/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)  
+    lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    lossfile.write(str(remain_loss_list))
+    lossfile.close()
+    # acc
+    rootpath = './log/Original/accremain/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)  
+    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    accfile.write(str(remain_acc_list))
+    accfile.close()
 
     # ########### Compute unlearning statistics
     # print("Forget: ",indices_to_unlearn)
     save_path = './log/Proposed/statistics/Approximators_all_{}_{}_{}_{}.pth'.format(args.model,args.dataset,args.epochs,args.seed)
+
+    ##############  Case 1: Large scale forgetting data
+    Approximator_proposed = {j: torch.zeros_like(param) for j, param in enumerate(net.parameters())}
     if args.dataset in ['celeba', 'cifar']:
-        Approximators=getapproximator_celeba(args,img_size,Dataset2recollect=Dataset2recollect,indices_to_unlearn=indices_to_unlearn)
+        for i in range(0, len(indices_to_unlearn), 25):
+            indices_to_unlearn_i = indices_to_unlearn[i:i+25]
+            Approximators=getapproximator_celeba(args,img_size,Dataset2recollect=Dataset2recollect,indices_to_unlearn=indices_to_unlearn_i)
+            for idx in indices_to_unlearn_i:
+                for j, param in enumerate(net.parameters()):
+                    Approximator_proposed[j] += Approximators[idx][j]
+            del Approximators
     else:
         if not os.path.exists(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
@@ -203,19 +236,35 @@ if __name__ == '__main__':
     print("(Proposed) Begin unlearning")
     unlearn_t_start = time.time()
     model_params = net.state_dict()
-    # print(model_params)
-    Approximator_proposed = {j: torch.zeros_like(param) for j, param in enumerate(net.parameters())}
-    for idx in indices_to_unlearn:
-        for j, param in enumerate(net.parameters()):
-            Approximator_proposed[j] += Approximators[idx][j]
     for j, param in enumerate(net.parameters()):
         param.data += Approximator_proposed[j]
-    # for j, (name, param) in enumerate(net.named_parameters()):
-    #     model_params[name] += Approximator_proposed[j]
-    # net.load_state_dict(model_params)
+
+    ##############  Case 2: Small scale forgetting data  ##############
+    # if args.dataset in ['celeba', 'cifar']:
+    #     Approximators=getapproximator_celeba(args,img_size,Dataset2recollect=Dataset2recollect,indices_to_unlearn=indices_to_unlearn)
+    # else:
+    #     if not os.path.exists(os.path.dirname(save_path)):
+    #         os.makedirs(os.path.dirname(save_path))
+    #     if not os.path.exists(save_path):
+    #         print("Calculate unlearning statistics")
+    #         Approximators=getapproximator(args,img_size,Dataset2recollect=Dataset2recollect)
+    #         torch.save(Approximators, save_path)
+    #     else:
+    #         print("Load approximator")
+    #         Approximators = torch.load(save_path)
+
+    # ########### Unlearning
+    # print("(Proposed) Begin unlearning")
+    # unlearn_t_start = time.time()
+    # model_params = net.state_dict()
+    # # print(model_params)
+    # Approximator_proposed = {j: torch.zeros_like(param) for j, param in enumerate(net.parameters())}
     # for idx in indices_to_unlearn:
     #     for j, param in enumerate(net.parameters()):
-    #         param.data += Approximators[idx][j]
+    #         Approximator_proposed[j] += Approximators[idx][j]
+    # for j, param in enumerate(net.parameters()):
+    #     param.data += Approximator_proposed[j]
+
     unlearn_t_end = time.time()
 
     acc_t, loss_t = test_img(net, dataset_test, args)
@@ -224,7 +273,7 @@ if __name__ == '__main__':
 
     print("(Proposed) Unlearned {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.2f}s \n".format(iter, acc_t, unlearn_t_end - unlearn_t_start))
 
-    ########### Save
+    ########### Save Test
     # save unlearned model
     rootpath1 = './log/Proposed/Model/'
     if not os.path.exists(rootpath1):
@@ -239,7 +288,7 @@ if __name__ == '__main__':
     torch.save(Approximator_proposed,  rootpath2+ 'Proposed_Approximator_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(
                         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
 
-    # save ACC
+    # save ACC test
     rootpath3 = './log/Proposed/ACC/'
     if not os.path.exists(rootpath3):
         os.makedirs(rootpath3)
@@ -258,7 +307,7 @@ if __name__ == '__main__':
     plt.savefig(rootpath3 + 'Proposed_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
 
-    # save Loss
+    # save Loss on test
     rootpath4 = './log/Proposed/losstest/'
     if not os.path.exists(rootpath4):
         os.makedirs(rootpath4)
@@ -277,16 +326,41 @@ if __name__ == '__main__':
         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
     
 
-    # Compute loss to Evaluate_Spearman
-    _, test_loss_list = test_per_img(net, dataset_train, args,indices_to_test=indices_to_unlearn)
+ 
+    ##### Compute unlearned loss/acc on forget
+    # loss
+    forget_acc_list, forget_loss_list = test_img(net, forget_dataset, args)
     rootpath = './log/Proposed/lossforget/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)  
     lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
     args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    for loss in test_loss_list:
-        sloss = str(loss)
-        lossfile.write(sloss)
-        lossfile.write('\n')
+    lossfile.write(str(forget_loss_list))
     lossfile.close()
+    # acc 
+    rootpath = './log/Proposed/accforget/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)  
+    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    accfile.write(str(forget_acc_list))
+    accfile.close()
 
+    ##### Compute unlearned loss/acc on remain
+    # loss
+    remain_acc_list, remain_loss_list = test_img(net, remain_dataset , args)
+    rootpath = './log/Proposed/lossremain/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)  
+    lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    lossfile.write(str(remain_loss_list))
+    lossfile.close()
+    # acc
+    rootpath = './log/Proposed/accremain/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)  
+    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    accfile.write(str(remain_acc_list))
+    accfile.close()
