@@ -43,11 +43,11 @@ Please note that the evaluation results can only be saved in "./result" when all
 
 ## Additional Experiments
 
-    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 1  --seed 930
-    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 2  --seed 930
-    python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 3  --seed 930
-    python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 4  --seed 930
-    python3 -u main_eva.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10  --gpu 5  --seed 930
+    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 --regularization 1e-2 --gpu 1  --seed 930
+    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 1e-2 --gpu 2  --seed 930
+    python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 1e-2 --gpu 3  --seed 930
+    python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 1e-2 --gpu 4  --seed 930
+    python3 -u main_eva.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 1e-2 --gpu 5  --seed 930
 
     python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  5000 --lr 0.001 --clip 10  --gpu 1  --seed 930
     python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  5000 --lr 0.001 --clip 10  --gpu 2  --seed 930
