@@ -54,8 +54,6 @@ Please be aware that the evaluation results can only be saved in "./result" once
     python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  5000 --lr 0.001 --clip 10  --gpu 4  --seed 930
     python3 -u main_eva.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  5000 --lr 0.001 --clip 10  --gpu 5  --seed 930
 
-
-It is important to highlight the challenges associated with evaluating the prior studies NS and IJ within the rebuttal period, primarily due to their high complexity requirements and the more restrictive assumptions made. 
-Hence, we instead use the following baseline methods:
+It's important to emphasize the challenges in evaluating prior studies NS and IJ on larger models, mainly due to their high complexity requirements and more restrictive assumptions. Therefore, we opt to use the following baseline methods instead:
 1. ***FineTune:** In case of finetuning, the original learned model is finetuned on the remaining dataset.* 
 2. ***NegGrad**: In case of gradient ascent, the learned model is finetuned using negative of the models gradients on the forgetting dataset.*
