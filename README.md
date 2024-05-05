@@ -1,10 +1,9 @@
-This repository is the supplementary code of the paper "Efficient Online Unlearning via Hessian-Free Recollection of Individual Data Statistics"
+This repository is the supplementary code of the paper "Efficient Certified Unlearning: A Hessian-Free Recollection Perspective with Better Generalization"
 
 
-Note that when executing the methods of NS and IJ, storing the Hessian for CNN and LeNet requires 1.78GB and 14.18GB of space, please make sure you have enough space to save the corresponding results.
+When implementing the NS and IJ methods, please note that storing the Hessian for CNN and LeNet requires 1.78GB and 14.18GB of space respectively. Ensure that you have sufficient space to save the corresponding results.
 
-We recommend executing the NS method in preference to IJ because IJ can use the results of NS to calculate and thus significantly reduce the computing time.
-
+We recommend prioritizing the execution of the NS method over IJ because IJ can utilize the results of NS for calculation, thereby significantly saving computing time of experiments.
 
 ## Proposed Method
     python3 -u main_proposed.py --model logistic --dataset mnist  --epochs 50 --num_dataset 1000 --batch_size 1000 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
@@ -32,7 +31,7 @@ We recommend executing the NS method in preference to IJ because IJ can use the 
     python3 -u main_retrain.py --model lenet --dataset fashion-mnist --epochs 30 --num_dataset 4000 --batch_size 256  --num_forget 400 --lr 0.5 --clip 0.5  --gpu 7  --seed 42
 
 ## Evaluation
-Please note that the evaluation results can only be saved in "./result" when all the NS, IJ, and ours have completed data removal. Otherwise, only the results of our method will be printed.
+Please be aware that the evaluation results can only be saved in "./result" once all processes for NS, IJ, and our method have completed data removal. Otherwise, only the results of our method will be printed.
 
     python3 -u main_eva.py --model logistic --dataset mnist  --epochs 50 --num_dataset 1000 --batch_size 1000 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
     python3 -u main_eva.py --model cnn --dataset mnist  --epochs 20 --num_dataset 1000 --batch_size 64 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
