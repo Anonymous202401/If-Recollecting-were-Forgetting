@@ -1,4 +1,4 @@
-This repository is the supplementary code of the paper "Efficient Certified Unlearning: A Hessian-Free Recollection Perspective with Better Generalization"
+This repository is the supplementary code of the paper "Efficient and Generalizable Certified Unlearning: A Hessian-free Recollection Approach"
 
 
 When implementing the NS and IJ methods, please note that storing the Hessian for CNN and LeNet requires 1.78GB and 14.18GB of space respectively. Ensure that you have sufficient space to save the corresponding results.
@@ -53,7 +53,9 @@ It's important to emphasize the challenges in evaluating prior studies NS and IJ
 1. ***FineTune:** In case of finetuning, the original learned model is finetuned on the remaining dataset.* 
 2. ***NegGrad**: In case of gradient ascent, the learned model is finetuned using negative of the models gradients on the forgetting dataset.*
 
-## Bash
+## Experiments Codebase
+This section contains the bash scripts to run all the experiments for the paper.
+
     bash MNIST.sh
     bash FMNIST.sh
     bash Cifar.sh
