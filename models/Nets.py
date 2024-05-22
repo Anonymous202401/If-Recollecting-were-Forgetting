@@ -116,7 +116,7 @@ class FashionCNN4(nn.Module):
         self.fc2 = nn.Linear(256,10)
                 
     def forward(self, x):
-        # conv layer 1 的前向计算，3行代码
+        # conv layer 1 
         out = self.conv1(x)
         out = self.relu1(out)
         out = self.batch1(out)
@@ -128,7 +128,7 @@ class FashionCNN4(nn.Module):
         out = self.maxpool1(out)
         out = self.conv1_drop(out)
 
-        # conv layer 2 的前向计算，4行代码
+        # conv layer 2 
         out = self.conv3(out)
         out = self.relu3(out)
         out = self.batch3(out)
@@ -140,10 +140,10 @@ class FashionCNN4(nn.Module):
         out = self.maxpool2(out)
         out = self.conv2_drop(out)
 
-        #Flatten拉平操作
+        #Flatten
         out = out.view(out.size(0),-1)
 
-        #FC layer的前向计算（2行代码）
+        #FC layer
         out = self.fc1(out)
         out = self.fc1_relu(out)
         out = self.dp1(out)
