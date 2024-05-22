@@ -54,15 +54,14 @@ Please be aware that the evaluation results can only be saved in "./result" once
 
 ## Additional Baseline Experiments
 
+    python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --regularization 1e-2 --lr_decay 0.99995 --clip 10  --gpu 7  --seed 930
+    python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --regularization 1e-2 --lr_decay 0.99995 --clip 10  --gpu 7  --seed 930
+
+    python3 -u main_finetune.py --model resnet18 --dataset lfw --epochs 49 --num_dataset 984 --batch_size 41 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.004 --clip 5.5 --gpu 7 --seed 42
+    python3 -u main_neggrad.py --model resnet18 --dataset lfw --epochs 49 --num_dataset 984 --batch_size 41 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.004 --clip 5.5 --gpu 7 --seed 42
+
     python3 -u main_finetune.py --model resnet18 --dataset celeba --epochs 5 --num_dataset 10000 --batch_size 64 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.01 --clip 10 --gpu 7 --seed 42
     python3 -u main_neggrad.py --model resnet18 --dataset celeba --epochs 5 --num_dataset 10000 --batch_size 64 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.01 --clip 10 --gpu 7 --seed 42
-
-    python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --regularization 1e-2 --lr_decay 0.99995 --clip 10  --gpu 0  --seed 930
-    python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --regularization 1e-2 --lr_decay 0.99995 --clip 10  --gpu 0  --seed 930
-
-    python3 -u main_finetune.py --model resnet18 --dataset lfw --epochs 49 --num_dataset 984 --batch_size 41 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.004 --clip 5.5 --gpu 1 --seed 42
-    python3 -u main_neggrad.py --model resnet18 --dataset lfw --epochs 49 --num_dataset 984 --batch_size 41 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.004 --clip 5.5 --gpu 1 --seed 42
-
 
 It's important to emphasize the challenges in evaluating prior studies NS and IJ on larger models, mainly due to their high complexity requirements and more restrictive assumptions. Therefore, we opt to use the following baseline methods instead:
 1. ***FineTune:** In case of finetuning, the original learned model is finetuned on the remaining dataset.* 
