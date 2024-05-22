@@ -112,7 +112,7 @@ def train_1(step,args, net, dataset,learning_rate):
             loss += 0.5 * args.regularization * (param * param).sum()
         net.train()
         loss.backward()
-        # torch.nn.utils.clip_grad_norm_(parameters=net.parameters(), max_norm=args.clip, norm_type=2)
+        torch.nn.utils.clip_grad_norm_(parameters=net.parameters(), max_norm=args.clip, norm_type=2)
         optimizer.step()
         scheduler.step()
         lr = scheduler.get_last_lr()[0]
