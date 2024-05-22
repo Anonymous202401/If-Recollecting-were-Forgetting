@@ -2,12 +2,17 @@ import os
 
 import pandas as pd
 from torch.utils.data import Dataset
-
+from torch.utils.data import DataLoader, Dataset
 from PIL import Image
+import os
+import shutil
+import numpy as np
+import torch as t
+from torchvision import transforms
 
 
 
-def data_processing():
+def data_processing_celeba():
     df1 = pd.read_csv('./data/celeba/list_attr_celeba.txt', sep="\s+", skiprows=1, usecols=['Male'])
     df1.loc[df1['Male'] == -1, 'Male'] = 0
 
@@ -27,15 +32,14 @@ def data_processing():
     # df4.loc[df4['Partition'] == 0].to_csv('./data/celeba/celeba-gender-train.csv')
     # df4.loc[df4['Partition'] == 1].to_csv('./data/celeba/celeba-gender-valid.csv')
     # df4.loc[df4['Partition'] == 2].to_csv('./data/celeba/celeba-gender-test.csv')
-        # 指定训练集和测试集的具体数量
-    train_samples = 4000  # 训练集样本数量
-    test_samples = 400   # 测试集样本数量
 
-    # 切片获取指定数量的训练集和测试集
+    train_samples = 50000  
+    test_samples = int(train_samples*0.4)   
+
+
     train_df = df3[df3['Partition'] == 0].head(train_samples)
     test_df = df3[df3['Partition'] == 2].head(test_samples)
 
-    # 将剩余的数据划分为验证集
     valid_df = df3[~df3.index.isin(train_df.index) & ~df3.index.isin(test_df.index)]
 
     train_df.to_csv('./data/celeba/celeba-gender-train.csv')
@@ -67,6 +71,67 @@ class CelebaDataset(Dataset):
 
     def __len__(self):
         return self.y.shape[0]
+    
+
+class LFWDataSet(Dataset):
+    def __init__(self, DataArray, LabelArray):
+        super(LFWDataSet, self).__init__()
+        self.data = DataArray
+        self.label = LabelArray
+
+    def __getitem__(self, index):
+        im_trans = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.CenterCrop(size=224),
+            transforms.RandomRotation((0, 30)),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406],
+                                [0.229, 0.224, 0.225])
+        ])
+        return im_trans(self.data[index]), t.tensor(self.label[index], dtype=t.long)
+
+    def __len__(self):
+        return self.label.shape[0]
+
+
+
+def data_processing_lfw():
+    # tar zxvf data/lfw.tgz -C./data
+    # src_dir = './data/lfw'
+    # dst_dir = './data/lfw_filtered'
+
+    # if not os.path.exists(dst_dir):
+    #     os.makedirs(dst_dir)
+
+    # for subfolder in os.listdir(src_dir):
+    #     subfolder_path = os.path.join(src_dir, subfolder)
+    #     if os.path.isdir(subfolder_path):
+    #         img_count = len(os.listdir(subfolder_path))
+    #         if 30 <= img_count <= 100:
+    #             dst_subfolder_path = os.path.join(dst_dir, subfolder)
+    #             shutil.copytree(subfolder_path, dst_subfolder_path)
+    #         else:
+    #             shutil.rmtree(subfolder_path)
+
+    src_dir = './data/lfw'
+    dst_dir = './data/lfw_filtered'
+
+    if not os.path.exists(dst_dir):
+        os.makedirs(dst_dir)
+    for subfolder in os.listdir(src_dir):
+        subfolder_path = os.path.join(src_dir, subfolder)
+        if os.path.isdir(subfolder_path):
+            img_count = len(os.listdir(subfolder_path))
+            if 30 <= img_count <= 100:
+                for img_file in os.listdir(subfolder_path):
+                    src_img_path = os.path.join(subfolder_path, img_file)
+                    dst_img_path = os.path.join(dst_dir, img_file)
+                    shutil.copy(src_img_path, dst_img_path)
+            else:
+                shutil.rmtree(subfolder_path)
+
+
 
 if __name__ == '__main__':
-    data_processing()
+    data_processing_celeba()
+    # data_processing_lfw()
