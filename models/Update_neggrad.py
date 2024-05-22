@@ -95,7 +95,7 @@ def train_neg(step,args, net, dataset,learning_rate):
     loss_func = nn.CrossEntropyLoss()
     lr=learning_rate
     optimizer = torch.optim.SGD(net.parameters(), lr=lr)
-    # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma= args.lr_decay)
+    # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma= 0.95)
     dataloader = DataLoader(DatasetSplit(dataset), batch_size=1, shuffle=True)
 
     loss=0
