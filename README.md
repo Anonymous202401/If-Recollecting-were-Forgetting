@@ -53,6 +53,13 @@ It's important to emphasize the challenges in evaluating prior studies NS and IJ
 1. ***FineTune:** In case of finetuning, the original learned model is finetuned on the remaining dataset.* 
 2. ***NegGrad**: In case of gradient ascent, the learned model is finetuned using negative of the models gradients on the forgetting dataset.*
 
+## Bash
+    bash MNIST.sh
+    bash FMNIST.sh
+    bash Cifar.sh
+    bash CelebA.sh
+    bash LFW.sh
+    
 ## Evaluation
 Please be aware that the evaluation results can only be saved in "./result" once all processes for NS, IJ, and our method have completed data removal. Otherwise, only the results of our method will be printed.
 
