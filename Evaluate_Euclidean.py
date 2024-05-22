@@ -71,12 +71,12 @@ def Evaluate_EuclideanTEST(args):
     finetune_model_state_dict = torch.load(finetune_model_path)
     neggrad_model_state_dict = torch.load(neggrad_model_path)
 
+
     # Move the model parameters to GPU
     proposed_model_weights = torch.cat([param.view(-1) for param in proposed_model_state_dict.values()])
     retrain_model_weights = torch.cat([param.view(-1) for param in retrain_model_state_dict.values()])
     finetune_model_weights = torch.cat([param.view(-1) for param in finetune_model_state_dict.values()])
     neggrad_model_weights = torch.cat([param.view(-1) for param in neggrad_model_state_dict.values()])
-
 
 
     proposed_model_weights = proposed_model_weights.to('cpu')
@@ -89,7 +89,6 @@ def Evaluate_EuclideanTEST(args):
     l2_norm_diff_proposed = torch.norm(proposed_model_weights - retrain_model_weights, 2)
     l2_norm_diff_finetune = torch.norm(finetune_model_weights - retrain_model_weights, 2)
     l2_norm_diff_neggrad = torch.norm(neggrad_model_weights - retrain_model_weights, 2)
-
 
 
     print("(Proposed) L2 norm difference:", l2_norm_diff_proposed.item())
