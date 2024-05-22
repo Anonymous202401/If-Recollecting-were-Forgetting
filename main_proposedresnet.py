@@ -10,17 +10,20 @@ import matplotlib.pyplot as plt
 import copy
 import numpy as np
 from torchvision import datasets, transforms
+from sklearn.model_selection import train_test_split
+import cv2
 import torch
-from torchvision.datasets import ImageFolder
 import os
 from utils.Approximator import getapproximator
-from utils.Approximator_for_celeba import  getapproximator_celeba
+from utils.Approximator_resnet import getapproximator_celeba
 from utils.options import args_parser
 from models.Update import  train
 from models.Nets import MLP, CNNMnist, CNNCifar,Logistic,LeNet,FashionCNN4
+import torch.nn as nn
 # resnet18
 from utils.subset import reduce_dataset_size
 from torch.utils.data import Subset
+import torch.utils.data as data
 from models.test import test_img, test_per_img
 import utils.loading_data as dataset
 import shutil
@@ -54,12 +57,6 @@ if __name__ == '__main__':
         dataset_train = datasets.MNIST('./data/mnist/', train=True, download=True, transform=trans_mnist)
         dataset_test = datasets.MNIST('./data/mnist/', train=False, download=True, transform=trans_mnist)
         args.num_channels = 1
-    elif args.dataset == 'cifar':
-
-        transform = transforms.Compose([transforms.ToTensor(),
-           transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])     
-        dataset_train = datasets.CIFAR10('./data/cifar', train=True, download=True, transform=transform)
-        dataset_test = datasets.CIFAR10('./data/cifar', train=False, download=True, transform=transform)
     elif args.dataset == 'fashion-mnist':
         args.num_channels = 1
         trans_fashion_mnist = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
@@ -67,16 +64,24 @@ if __name__ == '__main__':
                                               transform=trans_fashion_mnist)
         dataset_test  = datasets.FashionMNIST('./data/fashion-mnist', train=False, download=True,
                                               transform=trans_fashion_mnist)
+    elif args.dataset == 'cifar':
+        transform = transforms.Compose([transforms.ToTensor(),
+           transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])     
+        # transform = transforms.Compose([transforms.Resize((224, 224)),
+        #                         transforms.ToTensor(),
+        #                         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), ]
+        #                        )
+                               
+        dataset_train = datasets.CIFAR10('./data/cifar', train=True, download=True, transform=transform)
+        dataset_test = datasets.CIFAR10('./data/cifar', train=False, download=True, transform=transform)
     elif args.dataset == 'celeba':
         args.num_classe = 2
-        args.bs = 64
+        # args.bs = 64
         custom_transform =transforms.Compose([
                                                 transforms.Resize((128, 128)),
                                                 transforms.ToTensor(),
                                                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
                                             ])
-
-
         dataset_train = dataset.CelebaDataset(csv_path='./data/celeba/celeba-gender-train.csv',
                                       img_dir='./data/celeba/img_align_celeba/',
                                       transform=custom_transform)
@@ -86,14 +91,57 @@ if __name__ == '__main__':
         dataset_test = dataset.CelebaDataset(csv_path='./data/celeba/celeba-gender-test.csv',
                                      img_dir='./data/celeba/img_align_celeba/',
                                      transform=custom_transform)
+    elif args.dataset == 'svhn':
+        num_classes = 10
+        train_transform = transforms.Compose([])
+        normalize = transforms.Normalize(mean=[x / 255.0 for x in[109.9, 109.7, 113.8]],
+                                     std=[x / 255.0 for x in [50.1, 50.6, 50.8]])
+        train_transform.transforms.append(transforms.RandomCrop(32, padding=4))
+        train_transform.transforms.append(transforms.RandomHorizontalFlip())
+        train_transform.transforms.append(transforms.ToTensor())
+        train_transform.transforms.append(normalize)
+        dataset_train = datasets.SVHN(root='./data/svhn',
+                                    split='train',
+                                    transform=train_transform,
+                                    download=True)
+
+        dataset_test = datasets.SVHN(root='./data/svhn',
+                                    split='test',
+                                    transform=train_transform,
+                                    download=True)
+    elif args.dataset == 'lfw':
+        num_classes = 29
+        path = './data/lfw'
+        pathlist = map(lambda x: '/'.join([path, x]), os.listdir(path))
+        namedict = {}
+        data, label = [], []
+        idx = 0
+        for item in pathlist:
+            dirlist = os.listdir(item)
+            if not (30<= len(dirlist) <= 100):
+                continue
+            for picpath in dirlist:
+                data.append(cv2.imread(item + '/' + picpath))
+                label.append(idx)
+            namedict[str(idx)] = item.split('/')[-1]
+            idx += 1
+        data, label = np.stack(data), np.array(label)
+        idx = np.random.permutation(data.shape[0])
+        data, label = data[idx], label[idx]
+        train_X, test_X, train_Y, test_Y = train_test_split(data, label, test_size=0.2)
+        dataset_train = dataset.LFWDataSet(train_X, train_Y)
+        dataset_test= dataset.LFWDataSet(test_X, test_Y)
+        args.test_train_rate = 1 
+        args.num_dataset = len(dataset_train)
     else:
         exit('Error: unrecognized dataset')
 
-    
     dataset_train = reduce_dataset_size(dataset_train, args.num_dataset,random_seed=args.seed)
     testsize = math.floor(args.num_dataset * args.test_train_rate)
     dataset_test = reduce_dataset_size(dataset_test,testsize,random_seed=args.seed)
     img_size = dataset_train[0][0].shape
+    print('Train dataset:   ',len(dataset_train))
+    print('Test dataset:   ',len(dataset_test))
         
 
     net = None
@@ -107,9 +155,27 @@ if __name__ == '__main__':
     elif args.model == 'lenet' and args.dataset == 'fashion-mnist':
         net = LeNet().to(args.device)
     elif args.model == 'resnet18' and args.dataset == 'celeba':
-        net = resnet18(num_classes=2).to(args.device)
+        net = resnet18(pretrained=True).to(args.device)
+        fc_features = net.fc.in_features
+        net.fc = nn.Linear(fc_features,2)
     elif args.model == 'resnet18' and args.dataset == 'cifar':
         net = resnet18(pretrained=True).to(args.device)
+        fc_features = net.fc.in_features
+        net.fc = nn.Linear(fc_features,10)
+    elif args.model == 'resnet18' and args.dataset == 'svhn':
+        net = resnet18(pretrained=True).to(args.device)
+        fc_features = net.fc.in_features
+        net.fc = nn.Linear(fc_features,10)
+    elif args.model == 'resnet18' and args.dataset == 'lfw':
+        net = resnet18(pretrained=True).to(args.device)
+        # for param in net.parameters():
+        #     param.requires_grad = False
+        fc_inputs = net.fc.in_features
+        net.fc = nn.Sequential(
+            nn.Linear(fc_inputs, 256),
+            nn.ReLU(),
+            nn.Dropout(),
+            nn.Linear(256, 29))
     elif args.model == 'mlp':
         len_in = 1
         for x in img_size:
@@ -147,7 +213,7 @@ if __name__ == '__main__':
         # print accuracy
         net.eval()
         acc_t, loss_t = test_img(net, dataset_test, args)
-        print(" Epoch {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.2f}s \n".format(iter, acc_t, t_end - t_start))
+        print(" Epoch {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.8f}s \n".format(iter, acc_t, t_end - t_start))
 
         acc_test.append(acc_t.item())
         loss_test.append(loss_t)
@@ -162,50 +228,12 @@ if __name__ == '__main__':
         del info 
          
 
-    ########### Save
     all_indices_train = list(range(len(dataset_train)))
     indices_to_unlearn = random.sample(all_indices_train, k=args.num_forget)
     remaining_indices = list(set(all_indices_train) - set(indices_to_unlearn))
     forget_dataset = Subset(dataset_train, indices_to_unlearn)
     remain_dataset = Subset(dataset_train, remaining_indices)
     
-    ##### Compute original loss/acc on forget
-    # loss
-    forget_acc_list, forget_loss_list = test_img(net, forget_dataset, args)
-    rootpath = './log/Original/lossforget/'
-    if not os.path.exists(rootpath):
-        os.makedirs(rootpath)  
-    lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    lossfile.write(str(forget_loss_list))
-    lossfile.close()
-    # acc 
-    rootpath = './log/Original/accforget/'
-    if not os.path.exists(rootpath):
-        os.makedirs(rootpath)  
-    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    accfile.write(str(forget_acc_list))
-    accfile.close()
-
-    ##### Compute original loss/acc on remain
-    # loss
-    remain_acc_list, remain_loss_list = test_img(net, remain_dataset , args)
-    rootpath = './log/Original/lossremain/'
-    if not os.path.exists(rootpath):
-        os.makedirs(rootpath)  
-    lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    lossfile.write(str(remain_loss_list))
-    lossfile.close()
-    # acc
-    rootpath = './log/Original/accremain/'
-    if not os.path.exists(rootpath):
-        os.makedirs(rootpath)  
-    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    accfile.write(str(remain_acc_list))
-    accfile.close()
 
     # ########### Compute unlearning statistics
     # print("Forget: ",indices_to_unlearn)
@@ -213,9 +241,9 @@ if __name__ == '__main__':
 
     ##############  Case 1: Large scale forgetting data
     Approximator_proposed = {j: torch.zeros_like(param) for j, param in enumerate(net.parameters())}
-    if args.dataset in ['celeba', 'cifar']:
-        for i in range(0, len(indices_to_unlearn), 25):
-            indices_to_unlearn_i = indices_to_unlearn[i:i+25]
+    if args.dataset in ['celeba', 'cifar', 'lfw']:
+        for i in range(0, len(indices_to_unlearn), 50):
+            indices_to_unlearn_i = indices_to_unlearn[i:i+50]
             Approximators=getapproximator_celeba(args,img_size,Dataset2recollect=Dataset2recollect,indices_to_unlearn=indices_to_unlearn_i)
             for idx in indices_to_unlearn_i:
                 for j, param in enumerate(net.parameters()):
@@ -271,7 +299,7 @@ if __name__ == '__main__':
     acc_test.append(acc_t.item())
     loss_test.append(loss_t)
 
-    print("(Proposed) Unlearned {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.2f}s \n".format(iter, acc_t, unlearn_t_end - unlearn_t_start))
+    print("(Proposed) Unlearned {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.7f}s \n".format(iter, acc_t, unlearn_t_end - unlearn_t_start))
 
     ########### Save Test
     # save unlearned model
