@@ -11,8 +11,10 @@ We recommend prioritizing the execution of the NS method over IJ because IJ can 
     python3 -u main_proposed.py --model cnn --dataset fashion-mnist --epochs 30 --num_dataset 4000 --batch_size 256 --num_forget 800 --lr 0.5 --clip 0.5 --gpu 7  --seed 42
     python3 -u main_proposed.py --model lenet --dataset fashion-mnist --epochs 30 --num_dataset 4000 --batch_size 256  --num_forget 800 --lr 0.5 --clip 0.5  --gpu 7  --seed 42
     
-    python3 -u main_proposedresnet.py --model resnet18 --dataset celeba --epochs 10 --num_dataset 1000 --batch_size 32 --num_forget 50  --lr 0.05 --clip 10 --gpu 7  --seed 42
-    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 --regularization 1e-2 --gpu 7  --seed 930
+    python3 -u main_proposedresnet.py --model resnet18 --dataset celeba --epochs 5 --num_dataset 10000 --batch_size 64 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.01 --clip 10 --gpu 7 --seed 42
+    python3 -u main_proposedresnet.py --model resnet18 --dataset lfw --epochs 49 --num_dataset 984 --batch_size 41 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.004 --clip 5.5 --gpu 7 --seed 42
+    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --regularization 1e-2 --lr_decay 0.99995 --clip 10  --gpu 7  --seed 930
+
 
 ## NS Method (Unofficial implementation)
     python3 -u main_NU.py --model logistic --dataset mnist  --epochs 50 --num_dataset 1000 --batch_size 1000 --num_forget  200 --lr 0.05 --clip 10  --gpu 7  --seed 42
@@ -32,8 +34,9 @@ We recommend prioritizing the execution of the NS method over IJ because IJ can 
     python3 -u main_retrain.py --model cnn --dataset fashion-mnist --epochs 30 --num_dataset 4000 --batch_size 256 --num_forget 800 --lr 0.5 --clip 0.5 --gpu 7  --seed 42
     python3 -u main_retrain.py --model lenet --dataset fashion-mnist --epochs 30 --num_dataset 4000 --batch_size 256  --num_forget 800 --lr 0.5 --clip 0.5  --gpu 7  --seed 42
 
-    python3 -u main_retrain.py --model resnet18 --dataset celeba --epochs 10 --num_dataset 1000 --batch_size 32 --num_forget 50  --lr 0.05 --clip 10 --gpu 7  --seed 42
-    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 --regularization 1e-2 --gpu 7  --seed 930
+    python3 -u main_retrain.py --model resnet18 --dataset celeba --epochs 5 --num_dataset 10000 --batch_size 64 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.01 --clip 10 --gpu 7 --seed 42
+    python3 -u main_retrain.py --model resnet18 --dataset lfw --epochs 49 --num_dataset 984 --batch_size 41 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.004 --clip 5.5 --gpu 7 --seed 42
+    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --regularization 1e-2 --lr_decay 0.99995 --clip 10  --gpu 7  --seed 930
 
 ## Evaluation
 Please be aware that the evaluation results can only be saved in "./result" once all processes for NS, IJ, and our method have completed data removal. Otherwise, only the results of our method will be printed.
@@ -43,18 +46,23 @@ Please be aware that the evaluation results can only be saved in "./result" once
     python3 -u main_eva.py --model cnn --dataset fashion-mnist --epochs 30 --num_dataset 4000 --batch_size 256 --num_forget 800 --lr 0.5 --clip 0.5 --gpu 7  --seed 42
     python3 -u main_eva.py --model lenet --dataset fashion-mnist --epochs 30 --num_dataset 4000 --batch_size 256  --num_forget 800 --lr 0.5 --clip 0.5  --gpu 7  --seed 42
     
-    python3 -u main_eva.py --model resnet18 --dataset celeba --epochs 10 --num_dataset 1000 --batch_size 32 --num_forget 50  --lr 0.05 --clip 10 --gpu 7  --seed 42
-    python3 -u main_eva.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 --regularization 1e-2 --gpu 7  --seed 930
+    python3 -u main_eva.py --model resnet18 --dataset celeba --epochs 5 --num_dataset 10000 --batch_size 64 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.01 --clip 10 --gpu 7 --seed 42
+    python3 -u main_eva.py --model resnet18 --dataset lfw --epochs 49 --num_dataset 984 --batch_size 41 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.004 --clip 5.5 --gpu 7 --seed 42
+    python3 -u main_eva.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --regularization 1e-2 --lr_decay 0.99995 --clip 10  --gpu 7  --seed 930
 
 
 
-## Additional Experiments
+## Additional Baseline Experiments
 
-    python3 -u main_proposedresnet.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 --regularization 1e-2 --gpu 1  --seed 930
-    python3 -u main_retrain.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 --regularization 1e-2 --gpu 2  --seed 930
-    python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 --regularization 1e-2 --gpu 3  --seed 930
-    python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 --regularization 1e-2 --gpu 4  --seed 930
-    python3 -u main_eva.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --clip 10 --regularization 1e-2 --gpu 5  --seed 930
+python3 -u main_finetune.py --model resnet18 --dataset celeba --epochs 5 --num_dataset 10000 --batch_size 64 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.01 --clip 10 --gpu 7 --seed 42
+python3 -u main_neggrad.py --model resnet18 --dataset celeba --epochs 5 --num_dataset 10000 --batch_size 64 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.01 --clip 10 --gpu 7 --seed 42
+
+python3 -u main_finetune.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --regularization 1e-2 --lr_decay 0.99995 --clip 10  --gpu 0  --seed 930
+python3 -u main_neggrad.py --model resnet18 --dataset cifar  --epochs 40 --num_dataset 50000 --batch_size 256 --num_forget  50 --lr 0.001 --regularization 1e-2 --lr_decay 0.99995 --clip 10  --gpu 0  --seed 930
+
+python3 -u main_finetune.py --model resnet18 --dataset lfw --epochs 49 --num_dataset 984 --batch_size 41 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.004 --clip 5.5 --gpu 1 --seed 42
+python3 -u main_neggrad.py --model resnet18 --dataset lfw --epochs 49 --num_dataset 984 --batch_size 41 --num_forget 50 --regularization 1e-2 --lr_decay 0.9995 --lr 0.004 --clip 5.5 --gpu 1 --seed 42
+
 
 
 It's important to emphasize the challenges in evaluating prior studies NS and IJ on larger models, mainly due to their high complexity requirements and more restrictive assumptions. Therefore, we opt to use the following baseline methods instead:
