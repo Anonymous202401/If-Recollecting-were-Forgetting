@@ -259,15 +259,3 @@ if __name__ == '__main__':
     plt.savefig(rootpath4 + 'NU_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
 
-    # Compute loss to Evaluate_Pearson
-    _, test_loss_list = test_per_img(net, dataset_train, args,indices_to_test=indices_to_unlearn)
-    rootpath = './log/NU/lossforget/'
-    if not os.path.exists(rootpath):
-        os.makedirs(rootpath)    
-    lossfile = open(rootpath + 'NU_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    for loss in test_loss_list:
-        sloss = str(loss)
-        lossfile.write(sloss)
-        lossfile.write('\n')
-    lossfile.close()
