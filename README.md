@@ -8,5 +8,5 @@ This section contains the bash scripts to run all the experiments for the paper.
     bash Cifar.sh
     bash CelebA.sh
     bash LFW.sh
-    
-
+    bash MIAU.sh
+    bash MIAL.sh
