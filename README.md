@@ -1,4 +1,4 @@
-This repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-free Online Model Updates Approach**"
+This repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-free Online Model Updates Approach**".
 
 # Quick Start Guide
 ### 1. Model Learning and Unlearning
@@ -16,7 +16,7 @@ We first obtain the learned model and the unlearned models, which can be done us
 
         python3 -u main_NU.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 42
 
-**Infinitesimal Jacknife Method (Unofficial implementation)**:
+**Infinitesimal Jackknife Method (Unofficial implementation)**:
 
         python3 -u main_IJ.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 42
         
