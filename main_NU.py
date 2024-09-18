@@ -220,13 +220,13 @@ if __name__ == '__main__':
         os.makedirs(rootpath2) 
     torch.save(Approximator_NU, rootpath2+ 'NU_Approximator_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(args.model,args.dataset, args.num_forget,args.epochs,args.seed))
 
-    # save ACC
-    rootpath3 = './log/NU/ACC/'
+    ###  Testing data 
+    # save acc of test data
+    rootpath3 = './log/NU/acctest/'
     if not os.path.exists(rootpath3):
         os.makedirs(rootpath3) 
     accfile = open(rootpath3 + 'NU_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.
                    format(args.model,args.dataset, args.num_forget,args.epochs,args.seed), "w")
-
     for ac in acc_test:
         sac = str(ac)
         accfile.write(sac)
@@ -238,24 +238,34 @@ if __name__ == '__main__':
     plt.ylabel('test accuracy')
     plt.savefig(rootpath3 + 'NU_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
-
-
-    # save Loss
+    # save loss of test data
     rootpath4 = './log/NU/losstest/'
     if not os.path.exists(rootpath4):
         os.makedirs(rootpath4)
     lossfile = open(rootpath4 + 'NU_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.
                    format(args.model,args.dataset, args.num_forget,args.epochs,args.seed), "w")
-
     for loss in loss_test:
         sloss = str(loss)
         lossfile.write(sloss)
         lossfile.write('\n')
     lossfile.close()
-    # plot loss curve
+    # plot loss curve of test data
     plt.figure()
     plt.plot(range(len(loss_test)), loss_test)
     plt.ylabel('test loss')
     plt.savefig(rootpath4 + 'NU_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
 
+    ###  Forgetting data 
+    _, test_loss_list = test_per_img(net, dataset_train, args,indices_to_test=indices_to_unlearn)
+    # Compute loss of forgetting data
+    rootpath = './log/NU/lossforget/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)    
+    lossfile = open(rootpath + 'NU_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
+    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    for loss in test_loss_list:
+        sloss = str(loss)
+        lossfile.write(sloss)
+        lossfile.write('\n')
+    lossfile.close()

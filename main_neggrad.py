@@ -128,9 +128,9 @@ if __name__ == '__main__':
         idx = np.random.permutation(data.shape[0])
         data, label = data[idx], label[idx]
         train_X, test_X, train_Y, test_Y = train_test_split(data, label, test_size=0.2)
+        args.test_train_rate = 1; args.epochs-=1; args.batch_size+=1
         dataset_train = dataset.LFWDataSet(train_X, train_Y)
         dataset_test= dataset.LFWDataSet(test_X, test_Y)
-        args.test_train_rate = 1 
         args.num_dataset = len(dataset_train)
     else:
         exit('Error: unrecognized dataset')
@@ -225,9 +225,10 @@ if __name__ == '__main__':
 
 
     step_neg=0
-    for iter in range(1):
+    epoch_neg= 2
+    for iter in range(epoch_neg):
         t_start = time.time()
-        w, loss,lr,step_neg = train_neg(step_neg,args=args, net=copy.deepcopy(net).to(args.device), dataset=forget_dataset,  learning_rate= args.lr*0.001)
+        w, loss,lr,step_neg = train_neg(step_neg,args=args, net=copy.deepcopy(net).to(args.device), dataset=forget_dataset,  learning_rate= args.lr*0.1)
         t_end = time.time()   
         # copy weight to net
         net.load_state_dict(w)

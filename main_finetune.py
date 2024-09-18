@@ -128,9 +128,9 @@ if __name__ == '__main__':
         idx = np.random.permutation(data.shape[0])
         data, label = data[idx], label[idx]
         train_X, test_X, train_Y, test_Y = train_test_split(data, label, test_size=0.2)
+        args.test_train_rate = 1; args.epochs-=1; args.batch_size+=1
         dataset_train = dataset.LFWDataSet(train_X, train_Y)
         dataset_test= dataset.LFWDataSet(test_X, test_Y)
-        args.test_train_rate = 1 
         args.num_dataset = len(dataset_train)
     else:
         exit('Error: unrecognized dataset')
@@ -224,8 +224,8 @@ if __name__ == '__main__':
         loss_test.append(loss_t)
     print(" Learned {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.2f}s \n".format(iter, acc_t, t_end - t_start))
 
-
-    for iter in range(10):
+    epoch_finetune= 15
+    for iter in range(epoch_finetune):
         t_start = time.time()
         w, loss,lr,step = train_1(step,args=args, net=copy.deepcopy(net).to(args.device), dataset=remain_dataset,  learning_rate=args.lr)
         t_end = time.time()   
@@ -248,6 +248,7 @@ if __name__ == '__main__':
         os.makedirs(rootpath1)
     torch.save(net.state_dict(),  rootpath1+ 'Finetune_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(args.model,args.dataset, args.num_forget,args.epochs,args.seed))
 
+    ##### Compute loss/acc on testing data
     # save acc
     rootpath3 = './log/Finetune/ACC/'
     if not os.path.exists(rootpath3):
@@ -284,9 +285,9 @@ if __name__ == '__main__':
         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
 
 
-    ##### Compute loss/acc on forget
-    # loss
+    ##### Compute loss/acc on forgetting data
     forget_acc_list, forget_loss_list = test_img(net, forget_dataset, args)
+    # loss
     rootpath = './log/Finetune/lossforget/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)  
@@ -303,9 +304,9 @@ if __name__ == '__main__':
     accfile.write(str(forget_acc_list))
     accfile.close()
 
-    ##### Compute loss/acc on remain
-    # loss
+    ##### Compute loss/acc on remaining data
     remain_acc_list, remain_loss_list = test_img(net, remain_dataset , args)
+    # loss
     rootpath = './log/Finetune/lossremain/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)  
@@ -322,60 +323,6 @@ if __name__ == '__main__':
     accfile.write(str(remain_acc_list))
     accfile.close()
 
-
-    # # Compute loss to Evaluate_Spearman
-    # _, test_loss_list = test_per_img(net, remain_dataset, args,indices_to_test=indices_to_unlearn)
-    # rootpath = './log/Finetune/lossforget/'
-    # if not os.path.exists(rootpath):
-    #     os.makedirs(rootpath)    
-    # lossfile = open(rootpath + 'Finetune_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    # args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    # for loss in test_loss_list:
-    #     sloss = str(loss)
-    #     lossfile.write(sloss)
-    #     lossfile.write('\n')
-    # lossfile.close()
-
-
-
-    # # Compute loss to Evaluate_Spearman
-    # all_indices = list(range(len(dataset_test)))
-    # indices_to_test = random.sample(all_indices, k=100)
-    # _, test_loss_list = test_per_img(net, dataset_test, args,indices_to_test=indices_to_test)
-    # rootpath = './log/Finetune/lossforget/'
-    # if not os.path.exists(rootpath):
-    #     os.makedirs(rootpath)    
-    # lossfile = open(rootpath + 'Finetune_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    # args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    # for loss in test_loss_list:
-    #     sloss = str(loss)
-    #     lossfile.write(sloss)
-    #     lossfile.write('\n')
-    # lossfile.close()
- 
-
-
-    # # Test
-    # batch_idx_list_per_batch0=info[0]
-    # batch_idx_list_per_batch1=info[1]
-    # batch_idx_list_per_batch2=info[2]
-    # batch_idx_list_per_batch3=info[3]
-    # print("Forget: ",indices_to_unlearn)
-    # b1=batch_idx_list_per_batch0["batch_idx_list"]
-    # b2=batch_idx_list_per_batch1["batch_idx_list"]
-    # b3=batch_idx_list_per_batch2["batch_idx_list"]
-    # b4=batch_idx_list_per_batch3["batch_idx_list"]
-    # print(b1)
-    # print(b2)
-    # print(b3)
-    # print(b4)
-    # # exist same number?
-    # intersection = set(m) & set(l)
-    # if intersection:
-    #     print("same")
-    #     print("same lenth:", len(intersection))
-    # else:
-    #     print("not same")
 
 
 

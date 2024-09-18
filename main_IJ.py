@@ -203,14 +203,14 @@ if __name__ == '__main__':
     ########### Unlearning
     print("(IJ) Begin unlearning")
 
-    average_hessian = average_hessian.to('args.device')
+    average_hessian = average_hessian.to(args.device)
+    torch.cuda.synchronize()
+    unlearn_t_start = time.time()
     inv_average_hessian = torch.inverse(average_hessian)
     inv_average_hessian = inv_average_hessian.to(args.device)
     print('inv_average_hessian1 device',inv_average_hessian.device)
     # inv_average_hessian = inv_average_hessian.to('cpu')
     model_params = net.state_dict()
-    torch.cuda.synchronize()
-    unlearn_t_start = time.time()
     gradient_unlearn = compute_gradient_unlearn(args,copy.deepcopy(net).to(args.device),  forget_dataset)
     # gradient_unlearn = gradient_unlearn.to('cpu')
     # print('inv_average_hessian device',inv_average_hessian.device)
@@ -240,7 +240,9 @@ if __name__ == '__main__':
         os.makedirs(rootpath2) 
     torch.save(Approximator_IJ, rootpath2+ 'IJ_Approximator_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(args.model,args.dataset, args.num_forget,args.epochs,args.seed))
 
-    # save ACC
+
+    ###  Testing data 
+    # save acc of testing data
     rootpath3 = './log/IJ/ACC/'
     if not os.path.exists(rootpath3):
         os.makedirs(rootpath3) 
@@ -252,34 +254,33 @@ if __name__ == '__main__':
         accfile.write(sac)
         accfile.write('\n')
     accfile.close()
-
-    # plot acc curve
+    # plot acc curve of testing data
     plt.figure()
     plt.plot(range(len(acc_test)), acc_test)
     plt.ylabel('test accuracy')
     plt.savefig(rootpath3 + 'IJ_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
-
-    # save Loss
+    # save Loss of testing data
     rootpath4 = './log/IJ/losstest/'
     if not os.path.exists(rootpath4):
         os.makedirs(rootpath4)
     lossfile = open(rootpath4 + 'IJ_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.
                    format(args.model,args.dataset, args.num_forget,args.epochs,args.seed), "w")
-
     for loss in loss_test:
         sloss = str(loss)
         lossfile.write(sloss)
         lossfile.write('\n')
     lossfile.close()
-    # plot loss curve
+    # plot loss curve of testing data
     plt.figure()
     plt.plot(range(len(loss_test)), loss_test)
     plt.ylabel('test loss')
     plt.savefig(rootpath4 + 'IJ_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
         args.model,args.dataset, args.num_forget,args.epochs,args.seed))
     
+    ###  Forgetting data 
     _, test_loss_list = test_per_img(net, dataset_train, args,indices_to_test=indices_to_unlearn)
+    # Compute loss of forgetting data
     rootpath = './log/IJ/lossforget/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)    

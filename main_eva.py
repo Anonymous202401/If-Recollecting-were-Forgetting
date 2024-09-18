@@ -3,10 +3,11 @@ import time
 import matplotlib
 matplotlib.use('Agg')
 from utils.options import args_parser
-
-from Evaluate_Euclidean import Evaluate_Euclidean
-from Evaluate_Euclidean import Evaluate_EuclideanTEST
+from utils.Evaluate_Euclidean import Evaluate_Euclidean
+from utils.Evaluate_Euclidean import Evaluate_EuclideanTEST
 
 args = args_parser()
-Evaluate_EuclideanTEST(args)
-Evaluate_Euclidean(args)
+if args.dataset in ['mnist', 'fashion-mnist']:
+    Evaluate_Euclidean(args)
+else:
+    Evaluate_EuclideanTEST(args)

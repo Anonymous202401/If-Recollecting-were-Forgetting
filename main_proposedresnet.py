@@ -15,24 +15,27 @@ import cv2
 import torch
 import os
 from utils.Approximator import getapproximator
-from utils.Approximator_resnet import getapproximator_celeba
+from utils.Approximator_resnet import getapproximator_resnet
 from utils.options import args_parser
+from utils.subset import reduce_dataset_size
+from utils.perturbation import NoisedNetReturn
+import utils.loading_data as dataset
 from models.Update import  train
 from models.Nets import MLP, CNNMnist, CNNCifar,Logistic,LeNet,FashionCNN4
 import torch.nn as nn
 # resnet18
-from utils.subset import reduce_dataset_size
 from torch.utils.data import Subset
 import torch.utils.data as data
 from models.test import test_img, test_per_img
-import utils.loading_data as dataset
 import shutil
 import joblib
 from torchvision.models import resnet18
 
 if __name__ == '__main__':
 
-    ########### Setup
+###############################################################################
+#                               SETUP                                         #
+###############################################################################
     pycache_folder = "__pycache__"
     if os.path.exists(pycache_folder):
         shutil.rmtree(pycache_folder)
@@ -126,13 +129,14 @@ if __name__ == '__main__':
             namedict[str(idx)] = item.split('/')[-1]
             idx += 1
         data, label = np.stack(data), np.array(label)
+        args.test_train_rate = 1; args.epochs-=1; args.batch_size+=1
         idx = np.random.permutation(data.shape[0])
         data, label = data[idx], label[idx]
         train_X, test_X, train_Y, test_Y = train_test_split(data, label, test_size=0.2)
         dataset_train = dataset.LFWDataSet(train_X, train_Y)
         dataset_test= dataset.LFWDataSet(test_X, test_Y)
-        args.test_train_rate = 1 
         args.num_dataset = len(dataset_train)
+        
     else:
         exit('Error: unrecognized dataset')
 
@@ -143,7 +147,6 @@ if __name__ == '__main__':
     print('Train dataset:   ',len(dataset_train))
     print('Test dataset:   ',len(dataset_test))
         
-
     net = None
     # build model
     if args.model == 'cnn' and args.dataset == 'cifar':
@@ -190,13 +193,12 @@ if __name__ == '__main__':
         exit('Error: unrecognized model')
     print(net)
     net.train()
-    # copy weights
     w = net.state_dict()
     total = sum(p.numel() for p in net.parameters())
     print("The total number of model parameters: %.2d \t" % (total )," The memory footprint for a float32 model:  %.2f M" % (total * 4 / 1e6))
 
 
-    ########### Model training
+    ###################### Learning ######################
     # training
     acc_test = []
     loss_test = []
@@ -217,178 +219,159 @@ if __name__ == '__main__':
 
         acc_test.append(acc_t.item())
         loss_test.append(loss_t)
-        # load file
         path1 = "./Checkpoint/Resnet/model_{}_checkpoints". format(args.model)
-        # path1 = "../../../data/sda2/qiaoxinbao/Resnet/model_{}_checkpoints". format(args.model)
-        file_name = "check_{}_remove_{}_{}_seed{}_iter_{}.dat". format(args.dataset, args.num_forget,args.epochs,args.seed,iter)
+        file_name = "check_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}_iter_{}.dat".format(
+            args.dataset,args.epochs,args.lr,args.lr_decay,args.clip,args.seed,iter)
         file_path = os.path.join(path1, file_name)
         if not os.path.exists(os.path.dirname(file_path)):
             os.makedirs(os.path.dirname(file_path))
         info = joblib.dump(info,file_path)
         del info 
-         
+
+    rootpath = './log/Original/Model/'
+    if not os.path.exists(rootpath):
+        os.makedirs(rootpath)   
+    torch.save(net.state_dict(),  rootpath+ 'Original_model_{}_data_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.pth'
+               .format(args.model, args.dataset, args.epochs, args.lr,args.lr_decay,args.clip,args.seed))  
 
     all_indices_train = list(range(len(dataset_train)))
     indices_to_unlearn = random.sample(all_indices_train, k=args.num_forget)
     remaining_indices = list(set(all_indices_train) - set(indices_to_unlearn))
     forget_dataset = Subset(dataset_train, indices_to_unlearn)
     remain_dataset = Subset(dataset_train, remaining_indices)
-    
 
-    # ########### Compute unlearning statistics
-    # print("Forget: ",indices_to_unlearn)
-    save_path = './log/Proposed/statistics/Approximators_all_{}_{}_{}_{}.pth'.format(args.model,args.dataset,args.epochs,args.seed)
 
-    ##############  Case 1: Large scale forgetting data
+###############################################################################
+#                              PRECOMPUTATION UNLEARNING                      #
+###############################################################################
+    save_path = './log/Proposed/statistics/Approximators_model_{}_data_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.pth'.format(
+        args.model,args.dataset,args.epochs, args.lr,args.lr_decay,args.clip,args.seed)
     Approximator_proposed = {j: torch.zeros_like(param) for j, param in enumerate(net.parameters())}
-    if args.dataset in ['celeba', 'cifar', 'lfw']:
+    if args.model in ['resnet18']:
         for i in range(0, len(indices_to_unlearn), 50):
             indices_to_unlearn_i = indices_to_unlearn[i:i+50]
-            Approximators=getapproximator_celeba(args,img_size,Dataset2recollect=Dataset2recollect,indices_to_unlearn=indices_to_unlearn_i)
-            for idx in indices_to_unlearn_i:
-                for j, param in enumerate(net.parameters()):
-                    Approximator_proposed[j] += Approximators[idx][j]
-            del Approximators
+            Approximators,rho=getapproximator_resnet(args,img_size,Dataset2recollect=Dataset2recollect,indices_to_unlearn=indices_to_unlearn_i)
+            del Dataset2recollect
     else:
         if not os.path.exists(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
         if not os.path.exists(save_path):
             print("Calculate unlearning statistics")
-            Approximators=getapproximator(args,img_size,Dataset2recollect=Dataset2recollect)
-            torch.save(Approximators, save_path)
+            Approximators,rho=getapproximator(args,img_size,Dataset2recollect=Dataset2recollect)
+            del Dataset2recollect
+            torch.save({'Approximators': Approximators, 'rho': rho}, save_path)
         else:
             print("Load approximator")
-            Approximators = torch.load(save_path)
+            data = torch.load(save_path)
+            Approximators = data['Approximators']
+            rho = data['rho']
 
-    ########### Unlearning
+###############################################################################
+#                               UNLEARNINTG                                   #
+###############################################################################
     print("(Proposed) Begin unlearning")
+    Approximator_proposed = {j: torch.zeros_like(param) for j, param in enumerate(net.parameters())}
+    for idx in indices_to_unlearn:
+        for j in range(len(Approximator_proposed)):
+            Approximator_proposed[j] += Approximators[idx][j]
+# ## ------------ Online Unlearning ------------
+#         for j, param in enumerate(net.parameters()):
+#             param.data += Approximator_proposed[j]
+#             Approximator_proposed[j].zero_() 
+#         if args.application ==True:  
+#             w = NoisedNetReturn(args, net=copy.deepcopy(net).to(args.device), rho=rho, epsilon=args.epsilon, delta=args.delta, n=args.num_dataset, m=1)
+#             net.load_state_dict(w)
+# ## ------------ Online Unlearning ------------
+    del Approximators
+    torch.cuda.synchronize()
     unlearn_t_start = time.time()
-    model_params = net.state_dict()
+## ------------ Batch Unlearning ------------
     for j, param in enumerate(net.parameters()):
         param.data += Approximator_proposed[j]
-
-    ##############  Case 2: Small scale forgetting data  ##############
-    # if args.dataset in ['celeba', 'cifar']:
-    #     Approximators=getapproximator_celeba(args,img_size,Dataset2recollect=Dataset2recollect,indices_to_unlearn=indices_to_unlearn)
-    # else:
-    #     if not os.path.exists(os.path.dirname(save_path)):
-    #         os.makedirs(os.path.dirname(save_path))
-    #     if not os.path.exists(save_path):
-    #         print("Calculate unlearning statistics")
-    #         Approximators=getapproximator(args,img_size,Dataset2recollect=Dataset2recollect)
-    #         torch.save(Approximators, save_path)
-    #     else:
-    #         print("Load approximator")
-    #         Approximators = torch.load(save_path)
-
-    # ########### Unlearning
-    # print("(Proposed) Begin unlearning")
-    # unlearn_t_start = time.time()
-    # model_params = net.state_dict()
-    # # print(model_params)
-    # Approximator_proposed = {j: torch.zeros_like(param) for j, param in enumerate(net.parameters())}
-    # for idx in indices_to_unlearn:
-    #     for j, param in enumerate(net.parameters()):
-    #         Approximator_proposed[j] += Approximators[idx][j]
-    # for j, param in enumerate(net.parameters()):
-    #     param.data += Approximator_proposed[j]
-
+    if args.application ==True:
+        w = NoisedNetReturn(args, net=copy.deepcopy(net).to(args.device), rho=rho, epsilon=args.epsilon, delta=args.delta, n=args.num_dataset,m=args.num_forget)
+        net.load_state_dict(w)
+## ------------ Batch Unlearning ------------
+    torch.cuda.synchronize()
     unlearn_t_end = time.time()
-
     acc_t, loss_t = test_img(net, dataset_test, args)
     acc_test.append(acc_t.item())
     loss_test.append(loss_t)
+    print("(Proposed) Unlearned {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.8f}s \n".format(iter, acc_t, unlearn_t_end - unlearn_t_start))
 
-    print("(Proposed) Unlearned {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.7f}s \n".format(iter, acc_t, unlearn_t_end - unlearn_t_start))
 
-    ########### Save Test
+###############################################################################
+#                               SAVE                                          #
+###############################################################################
     # save unlearned model
     rootpath1 = './log/Proposed/Model/'
     if not os.path.exists(rootpath1):
         os.makedirs(rootpath1)   
-    torch.save(net.state_dict(),  rootpath1+ 'Proposed_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'
-               .format(args.model,args.dataset, args.num_forget,args.epochs,args.seed))
+    torch.save(net.state_dict(),  rootpath1+ 'Proposed_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.pth'
+               .format(args.model, args.dataset, args.num_forget, args.epochs, args.lr,args.lr_decay,args.clip,args.seed))
 
     # save approximator
     rootpath2 = './log/Proposed/Approximator/'
     if not os.path.exists(rootpath2):
         os.makedirs(rootpath2)    
-    torch.save(Approximator_proposed,  rootpath2+ 'Proposed_Approximator_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(
-                        args.model,args.dataset, args.num_forget,args.epochs,args.seed))
+    torch.save(Approximator_proposed,  rootpath2+ 'Proposed_Approximator_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.pth'.format(
+                        args.model, args.dataset, args.num_forget, args.epochs, args.lr,args.lr_decay,args.clip,args.seed))
 
-    # save ACC test
-    rootpath3 = './log/Proposed/ACC/'
+    ### Test Data
+    # save acc of test sample
+    rootpath3 = './log/Proposed/acctest/'
     if not os.path.exists(rootpath3):
         os.makedirs(rootpath3)
-    accfile = open(rootpath3 + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.
-                   format(args.model,args.dataset, args.num_forget,args.epochs,args.seed), "w")
-
+    accfile = open(rootpath3 + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.
+                   format(args.model, args.dataset, args.num_forget, args.epochs, args.lr,args.lr_decay,args.clip,args.seed), "w")
     for ac in acc_test:
         sac = str(ac)
         accfile.write(sac)
         accfile.write('\n')
     accfile.close()
-    # plot acc curve
+    # plot acc curve of test sample
     plt.figure()
     plt.plot(range(len(acc_test)), acc_test)
     plt.ylabel('test accuracy')
-    plt.savefig(rootpath3 + 'Proposed_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
-        args.model,args.dataset, args.num_forget,args.epochs,args.seed))
-
-    # save Loss on test
+    plt.savefig(rootpath3 + 'Proposed_plot_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.png'.format(
+        args.model, args.dataset, args.num_forget, args.epochs, args.lr,args.lr_decay,args.clip,args.seed))
+    # save loss of test sample
     rootpath4 = './log/Proposed/losstest/'
     if not os.path.exists(rootpath4):
         os.makedirs(rootpath4)
-    lossfile = open(rootpath4 + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.
-                   format(args.model,args.dataset, args.num_forget,args.epochs,args.seed), "w")
+    lossfile = open(rootpath4 + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.
+                   format( args.model, args.dataset, args.num_forget, args.epochs, args.lr,args.lr_decay,args.clip,args.seed), "w")
     for loss in loss_test:
         sloss = str(loss)
         lossfile.write(sloss)
         lossfile.write('\n')
     lossfile.close()
-    # plot loss curve
+    # plot loss curve of test sample
     plt.figure()
     plt.plot(range(len(loss_test)), loss_test)
     plt.ylabel('test loss')
-    plt.savefig(rootpath4 + 'Proposed_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
-        args.model,args.dataset, args.num_forget,args.epochs,args.seed))
+    plt.savefig(rootpath4 + 'Proposed_plot_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.png'.format(
+        args.model, args.dataset, args.num_forget, args.epochs, args.lr,args.lr_decay,args.clip,args.seed))
     
 
- 
-    ##### Compute unlearned loss/acc on forget
-    # loss
-    forget_acc_list, forget_loss_list = test_img(net, forget_dataset, args)
-    rootpath = './log/Proposed/lossforget/'
-    if not os.path.exists(rootpath):
-        os.makedirs(rootpath)  
-    lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    lossfile.write(str(forget_loss_list))
-    lossfile.close()
-    # acc 
+    ### Forgetting data 
+    forget_acc, forget_loss = test_img(net, forget_dataset, args)
+    # acc of forgetting data
     rootpath = './log/Proposed/accforget/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)  
-    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    accfile.write(str(forget_acc_list))
+    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.format(
+    args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed), 'w')
+    accfile.write(str(forget_acc))
     accfile.close()
 
-    ##### Compute unlearned loss/acc on remain
-    # loss
+    ###  Remaining data 
     remain_acc_list, remain_loss_list = test_img(net, remain_dataset , args)
-    rootpath = './log/Proposed/lossremain/'
-    if not os.path.exists(rootpath):
-        os.makedirs(rootpath)  
-    lossfile = open(rootpath + 'Proposed_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    lossfile.write(str(remain_loss_list))
-    lossfile.close()
-    # acc
+    # acc of remain data
     rootpath = './log/Proposed/accremain/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)  
-    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    accfile = open(rootpath + 'Proposed_accfile_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.format(
+    args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed), 'w')
     accfile.write(str(remain_acc_list))
     accfile.close()

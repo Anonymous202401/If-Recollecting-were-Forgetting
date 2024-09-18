@@ -130,9 +130,9 @@ if __name__ == '__main__':
         idx = np.random.permutation(data.shape[0])
         data, label = data[idx], label[idx]
         train_X, test_X, train_Y, test_Y = train_test_split(data, label, test_size=0.2)
+        args.test_train_rate = 1; args.epochs-=1; args.batch_size+=1
         dataset_train = dataset.LFWDataSet(train_X, train_Y)
         dataset_test= dataset.LFWDataSet(test_X, test_Y)
-        args.test_train_rate = 1 
         args.num_dataset = len(dataset_train)
     else:
         exit('Error: unrecognized dataset')
@@ -229,21 +229,20 @@ if __name__ == '__main__':
         acc_test.append(acc_t.item())
         loss_test.append(loss_t)
     print(" Retrained {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.2f}s \n".format(iter, acc_t, t_end - t_start))
-
-
-    
+   
     # save model
     rootpath1 = './log/Retrain/Model/'
     if not os.path.exists(rootpath1):
         os.makedirs(rootpath1)
-    torch.save(net.state_dict(),  rootpath1+ 'Retrain_model_{}_data_{}_remove_{}_epoch_{}_seed{}.pth'.format(args.model,args.dataset, args.num_forget,args.epochs,args.seed))
+    torch.save(net.state_dict(),  rootpath1+ 'Retrain_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.pth'
+               .format(args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed))
 
-    # save acc
-    rootpath3 = './log/Retrain/ACC/'
+    # save acc of test datset
+    rootpath3 = './log/Retrain/acctest/'
     if not os.path.exists(rootpath3):
         os.makedirs(rootpath3)
-    accfile = open(rootpath3 + 'Retrain_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.
-                   format(args.model,args.dataset, args.num_forget,args.epochs,args.seed), "w")
+    accfile = open(rootpath3 + 'Retrain_accfile_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.
+                   format(args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed), "w")
     for ac in acc_test:
         sac = str(ac)
         accfile.write(sac)
@@ -253,14 +252,14 @@ if __name__ == '__main__':
     plt.figure()
     plt.plot(range(len(acc_test)), acc_test)
     plt.ylabel('test accuracy')
-    plt.savefig(rootpath3 + 'Retrain_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
-        args.model,args.dataset, args.num_forget,args.epochs,args.seed))
+    plt.savefig(rootpath3 + 'Retrain_plot_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.png'.format(
+         args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed))
     # save Loss
     rootpath4 = './log/Retrain/losstest/'
     if not os.path.exists(rootpath4):
         os.makedirs(rootpath4)
-    lossfile = open(rootpath4 + 'Retrain_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.
-                   format(args.model,args.dataset, args.num_forget,args.epochs,args.seed), "w")
+    lossfile = open(rootpath4 + 'Retrain_lossfil_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.
+                   format(args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed), "w")
     for loss in loss_test:
         sloss = str(loss)
         lossfile.write(sloss)
@@ -270,102 +269,50 @@ if __name__ == '__main__':
     plt.figure()
     plt.plot(range(len(loss_test)), loss_test)
     plt.ylabel('test loss')
-    plt.savefig(rootpath4 + 'Retrain_plot_model_{}_data_{}_remove_{}_epoch_{}_seed{}.png'.format(
-        args.model,args.dataset, args.num_forget,args.epochs,args.seed))
+    plt.savefig(rootpath4 + 'Retrain_plot_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.png'.format(
+        args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed))
 
 
-    ##### Compute loss/acc on forget
+    ##### Compute loss/acc
     # loss
     forget_acc_list, forget_loss_list = test_img(net, forget_dataset, args)
     rootpath = './log/Retrain/lossforget/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)  
-    lossfile = open(rootpath + 'Retrain_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    lossfile = open(rootpath + 'Retrain_lossfile_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.format(
+    args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed), 'w')
     lossfile.write(str(forget_loss_list))
     lossfile.close()
     # acc 
     rootpath = './log/Retrain/accforget/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)  
-    accfile = open(rootpath + 'Retrain_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    accfile = open(rootpath + 'Retrain_accfile_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.format(
+   args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed), 'w')
     accfile.write(str(forget_acc_list))
     accfile.close()
 
-    ##### Compute loss/acc on remain
-    # loss
+    ##### Compute loss/acc on remaining datase
+    # loss of remaining data
     remain_acc_list, remain_loss_list = test_img(net, remain_dataset , args)
     rootpath = './log/Retrain/lossremain/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)  
-    lossfile = open(rootpath + 'Retrain_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    lossfile = open(rootpath + 'Retrain_lossfile_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.format(
+    args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed), 'w')
     lossfile.write(str(remain_loss_list))
     lossfile.close()
-    # acc
+    # acc of forgetting data
     rootpath = './log/Retrain/accremain/'
     if not os.path.exists(rootpath):
         os.makedirs(rootpath)  
-    accfile = open(rootpath + 'Retrain_accfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
+    accfile = open(rootpath + 'Retrain_accfile_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.dat'.format(
+    args.model,args.dataset, args.num_forget,args.epochs,args.lr,args.lr_decay,args.clip,args.seed), 'w')
     accfile.write(str(remain_acc_list))
     accfile.close()
 
-
-    # # Compute loss to Evaluate_Spearman
-    # _, test_loss_list = test_per_img(net, remain_dataset, args,indices_to_test=indices_to_unlearn)
-    # rootpath = './log/Retrain/lossforget/'
-    # if not os.path.exists(rootpath):
-    #     os.makedirs(rootpath)    
-    # lossfile = open(rootpath + 'Retrain_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    # args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    # for loss in test_loss_list:
-    #     sloss = str(loss)
-    #     lossfile.write(sloss)
-    #     lossfile.write('\n')
-    # lossfile.close()
-
-
-
-    # # Compute loss to Evaluate_Spearman
-    # all_indices = list(range(len(dataset_test)))
-    # indices_to_test = random.sample(all_indices, k=100)
-    # _, test_loss_list = test_per_img(net, dataset_test, args,indices_to_test=indices_to_test)
-    # rootpath = './log/Retrain/lossforget/'
-    # if not os.path.exists(rootpath):
-    #     os.makedirs(rootpath)    
-    # lossfile = open(rootpath + 'Retrain_lossfile_model_{}_data_{}_remove_{}_epoch_{}_seed{}.dat'.format(
-    # args.model, args.dataset, args.num_forget, args.epochs, args.seed), 'w')
-    # for loss in test_loss_list:
-    #     sloss = str(loss)
-    #     lossfile.write(sloss)
-    #     lossfile.write('\n')
-    # lossfile.close()
  
 
-
-    # # Test
-    # batch_idx_list_per_batch0=info[0]
-    # batch_idx_list_per_batch1=info[1]
-    # batch_idx_list_per_batch2=info[2]
-    # batch_idx_list_per_batch3=info[3]
-    # print("Forget: ",indices_to_unlearn)
-    # b1=batch_idx_list_per_batch0["batch_idx_list"]
-    # b2=batch_idx_list_per_batch1["batch_idx_list"]
-    # b3=batch_idx_list_per_batch2["batch_idx_list"]
-    # b4=batch_idx_list_per_batch3["batch_idx_list"]
-    # print(b1)
-    # print(b2)
-    # print(b3)
-    # print(b4)
-    # # exist same number?
-    # intersection = set(m) & set(l)
-    # if intersection:
-    #     print("same")
-    #     print("same lenth:", len(intersection))
-    # else:
-    #     print("not same")
 
 
 
