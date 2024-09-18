@@ -1,4 +1,4 @@
-This repository is the supplementary code of the paper "Efficient and Generalizable Certified Unlearning: A Hessian-free Recollection Approach"
+This repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-free Online Model Updates Approach**"
 
 ## Experiments Codebase
 This section contains the bash scripts to run all the experiments for the paper.
