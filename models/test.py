@@ -29,7 +29,6 @@ def test_img(net_g, datatest, args):
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
     torch.cuda.manual_seed(args.seed)
-
     net_g.eval()
     net_g.to(args.device)
     # testing

@@ -6,34 +6,17 @@ import torch
 from torch import nn
 from collections import OrderedDict
 import torch.nn.functional as F
-from opacus.layers import DPLSTM
-import math
-import os.path
 
 
 class Logistic(nn.Module):
     def __init__(self, dim_in, dim_out):
         super(Logistic, self).__init__()
         self.layer = nn.Linear(dim_in, dim_out)
-
     def forward(self, x):
         x = x.view(-1, x.shape[1]*x.shape[-2]*x.shape[-1])
-            
         x = self.layer(x)
-        
         return x
 
-class LogisticAdult(nn.Module):
-    def __init__(self, dim_in, dim_out):
-        super(LogisticAdult, self).__init__()
-        self.layer = nn.Linear(dim_in, dim_out)
-        # self.softmax = nn.Softmax(dim=1)
-
-    def forward(self, x):   
-        x = x.float()  
-        x = self.layer(x)
-        
-        return x
 
 class MLP(nn.Module):
     def __init__(self, dim_in, dim_hidden, dim_out):

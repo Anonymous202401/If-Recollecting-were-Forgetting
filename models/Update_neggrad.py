@@ -96,7 +96,7 @@ def train_neg(step,args, net, dataset,learning_rate):
     lr=learning_rate
     optimizer = torch.optim.SGD(net.parameters(), lr=lr)
     # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma= 0.95)
-    dataloader = DataLoader(DatasetSplit(dataset), batch_size=1, shuffle=True)
+    dataloader = DataLoader(DatasetSplit(dataset), batch_size=50, shuffle=True)
 
     loss=0
     # info= infomation

@@ -52,10 +52,7 @@ def train(step,args, net, dataset,learning_rate,indices_to_unlearn=[]):
     for batch_idx, (images, labels, indices) in enumerate(dataloader):
         optimizer.zero_grad()
         indices_to_train = [i for i in range(len(indices)) if indices[i] not in indices_to_unlearn]
-        net.eval()
-        # # save sample idx in batch
-        # batch_indices_to_train = indices[indices_to_train].tolist()
-        # info.append({"batch_idx_list": batch_indices_to_train, "model_list": copy.deepcopy(net).state_dict()})  
+        net.eval()  
         images, labels = images[indices_to_train].to(args.device), labels[indices_to_train].to(args.device)
         images, labels = images.to(args.device), labels.to(args.device)
         net.zero_grad()
@@ -71,7 +68,6 @@ def train(step,args, net, dataset,learning_rate,indices_to_unlearn=[]):
         lr = scheduler.get_last_lr()[0]
         del images, labels, log_probs
 
-        
         print("     Step {:3d}     Batch {:3d}, Batch Size: {:3d}, Trainning Loss: {:.2f}".format(step,batch_idx,dataloader.batch_size,loss))
         step +=1
         
@@ -117,8 +113,6 @@ def train_1(step,args, net, dataset,learning_rate):
         scheduler.step()
         lr = scheduler.get_last_lr()[0]
         del images, labels, log_probs
-
-        
         print("     Step {:3d}     Batch {:3d}, Batch Size: {:3d}, Trainning Loss: {:.2f}".format(step,batch_idx,dataloader.batch_size,loss))
         step +=1        
     return net.state_dict(), loss, lr,step
