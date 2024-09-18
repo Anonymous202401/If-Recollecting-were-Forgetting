@@ -10,3 +10,4 @@ This section contains the bash scripts to run all the experiments for the paper.
     bash LFW.sh
     bash MIAU.sh
     bash MIAL.sh
+    bash Ablation.sh
