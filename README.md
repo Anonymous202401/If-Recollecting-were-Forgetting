@@ -2,12 +2,22 @@ This repository is the supplementary code of the paper "**Efficient and Generali
 
 # Quick Start Guide
 ### 1. Model Learning and Unlearning
-We first obtain the learned model and the unlearned model, which can be done using the following commands:
+We first obtain the learned model and the unlearned models, which can be done using the following commands:
+**Proposed Hessian-Free Method**:
 
         python3 -u main_proposed.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 42
+        
+**Retraining Method**:
+
         python3 -u main_retrain.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 42
+
+**Newton Step Method (Unofficial implementation)**:
+
         python3 -u main_NU.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 42
+
+**Infinitesimal Jacknife Method (Unofficial implementation)**:
         python3 -u main_IJ.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 42
+        
 ### 2. Evaluate Distance
 We then evaluate the $L_2$ norm between unleaned model and retrained model:
 
