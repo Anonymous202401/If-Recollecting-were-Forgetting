@@ -3,14 +3,23 @@ import time
 import joblib
 from models.Nets import MLP, CNNMnist, CNNCifar,Logistic,LeNet,FashionCNN4
 import torch.nn as nn
+import random
+import numpy as np
 import torch
 import os
 import torch
 from torchvision.models import resnet18
+from utils.power_iteration import spectral_radius
 
 
-def getapproximator_celeba(args,img_size,Dataset2recollect,indices_to_unlearn):
+def getapproximator_resnet(args,img_size,Dataset2recollect,indices_to_unlearn):
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+    torch.cuda.manual_seed(args.seed)
     torch.cuda.empty_cache()
+    
     net = None
     # build model
     if args.model == 'cnn' and args.dataset == 'cifar':
@@ -60,21 +69,22 @@ def getapproximator_celeba(args,img_size,Dataset2recollect,indices_to_unlearn):
     # print(net)
     # net setup
     lr=args.lr
+    computed_rho = False
     loss_func = torch.nn.CrossEntropyLoss()
     approximator = {i: [torch.zeros_like(param) for param in net.parameters()] for i in indices_to_unlearn}
     for iter in range(args.epochs):
         # load file
         path1 = "./Checkpoint/Resnet/model_{}_checkpoints". format(args.model)
-        # path1 = "../../../data/sda2/qiaoxinbao/Resnet/model_{}_checkpoints". format(args.model)
-        file_name = "check_{}_remove_{}_{}_seed{}_iter_{}.dat". format(args.dataset, args.num_forget,args.epochs,args.seed,iter)
+        file_name = "check_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}_iter_{}.dat". format(
+            args.dataset, args.epochs,args.lr,args.lr_decay,args.clip,args.seed,iter)
         file_path = os.path.join(path1, file_name)
         info = joblib.load(file_path)  
         dataset = Dataset2recollect
-
-        # influence
-        for t in range(len(info)):
+        
+        # approximator
+        for b in range(len(info)):
             net.zero_grad()
-            model_t, batch_idx = info[t]["model_list"],info[t]["batch_idx_list"]
+            model_t, batch_idx = info[b]["model_list"],info[b]["batch_idx_list"]
             if args.model==resnet18:
                 net.train()
             else:  net.eval()
@@ -95,8 +105,7 @@ def getapproximator_celeba(args,img_size,Dataset2recollect,indices_to_unlearn):
                     loss_i.backward()
                     torch.nn.utils.clip_grad_norm_(parameters=net.parameters(), max_norm=args.clip, norm_type=2)
                     for j, param in enumerate(net.parameters()):
-                        approximator[i][j] += (param.grad.data * lr*(args.lr_decay**(len(info)*iter+t))) / len(batch_idx)
-            # print(net.state_dict())
+                        approximator[i][j] += (param.grad.data * lr*(args.lr_decay**(len(info)*iter+b))) / len(batch_idx)
             log_probs=0
             loss_batch =0 
             grad_norm = 0
@@ -104,24 +113,27 @@ def getapproximator_celeba(args,img_size,Dataset2recollect,indices_to_unlearn):
             batch_labels_t = torch.cat(batch_labels_t, dim=0)
             log_probs = net(batch_images_t)
             loss_batch = loss_func(log_probs, batch_labels_t)    
-            print("Recollecting Model  {:3d}, Training Loss: {:.2f}".format(t,loss_batch))
+            print("Recollecting Model  {:3d}, Training Loss: {:.2f}".format(b,loss_batch))
             for param in net.parameters():
-                loss_batch += 0.5 * args.regularization * (param * param).sum()
+                loss_batch +=  0.5 *args.regularization * (param * param).sum()
             grad_params = torch.autograd.grad(loss_batch, net.parameters(), create_graph=True, retain_graph=True)
             grad_norm = torch.norm(torch.cat([grad.view(-1) for grad in grad_params]))
             if grad_norm > args.clip:
                 scaling_factor = args.clip / grad_norm
                 grad_params = [grad * scaling_factor for grad in grad_params]
+            if not computed_rho:
+                rho = spectral_radius(args, loss_batch=loss_batch, net=net)
+                computed_rho = True     
             t_start = time.time()   
             for i in indices_to_unlearn: 
                 net.zero_grad()
                 HVP_i=torch.autograd.grad(grad_params,net.parameters(),approximator[i],retain_graph=True)
                 for j, param in enumerate(net.parameters()):
-                    approximator[i][j]=approximator[i][j] - (lr* (args.lr_decay**(len(info)*iter+t)) * HVP_i[j].detach())
+                    approximator[i][j]=approximator[i][j] - (lr* (args.lr_decay**(len(info)*iter+b)) * HVP_i[j].detach())
             del HVP_i,loss_batch,grad_params
             t_end = time.time()
             print("Computaion For step {} Time Elapsed:  {:.8f}s \n".format(iter,t_end - t_start))    
 
-    return approximator
+    return approximator, rho
     
 

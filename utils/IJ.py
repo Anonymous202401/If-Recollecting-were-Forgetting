@@ -9,7 +9,6 @@ import torch
 import time
 from utils.options import args_parser
 from torch.utils.data import DataLoader, Dataset
-from models.Nets import LogisticAdult,Logistic
 args = args_parser()
 
 
