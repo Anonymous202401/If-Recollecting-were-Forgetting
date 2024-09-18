@@ -1,6 +1,6 @@
 This repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-free Online Model Updates Approach**"
 
-## Quick Start Guide
+# Quick Start Guide
 ### 1. Model Learning and Unlearning
 We first obtain the learned model and the unlearned model, which can be done using the following commands:
 
@@ -20,7 +20,7 @@ Finally, we conduct the MIA (Membership Inference Attack) evaluation:
         python3 -u main_MIAL.py --model logistic --dataset mnist --epochs 15 --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0 --seed 42
 
 
-## Experiments Codebase
+# Experiments Codebase
 This section contains the bash scripts to run all the experiments for the paper.
 
     bash MNIST.sh
