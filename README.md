@@ -1,7 +1,13 @@
 This repository is the supplementary code of the paper "Efficient and Generalizable Certified Unlearning: A Hessian-free Recollection Approach"
-
 .
+├── Ablation
+│   ├── log
+│   └── results
+├── Ablation.sh
+├── CelebA.sh
 ├── Checkpoint
+│   └── model_logistic_checkpoints
+├── Cifar.sh
 ├── data
 │   ├── celeba
 │   ├── cifar
@@ -10,6 +16,8 @@ This repository is the supplementary code of the paper "Efficient and Generaliza
 │   ├── mnist
 │   ├── MNIST
 │   └── svhn
+├── FMNIST.sh
+├── LFW.sh
 ├── log
 │   ├── Finetune
 │   ├── IJ
@@ -28,15 +36,20 @@ This repository is the supplementary code of the paper "Efficient and Generaliza
 ├── main_proposed.py
 ├── main_proposedresnet.py
 ├── main_retrain.py
+├── MIAL.sh
+├── MIAU.sh
+├── MNIST.sh
 ├── models
 │   ├── __init__.py
 │   ├── Nets.py
+│   ├── __pycache__
 │   ├── ResNet18.py
 │   ├── test.py
 │   ├── Update_neggrad.py
 │   ├── Update_NU.py
 │   ├── Update.py
 │   └── Update_retrain.py
+├── output.md
 ├── results
 │   ├── Euclidean
 │   ├── MIAL
@@ -55,7 +68,11 @@ This repository is the supplementary code of the paper "Efficient and Generaliza
     ├── options.py
     ├── perturbation.py
     ├── power_iteration.py
+    ├── __pycache__
     └── subset.py
+
+29 directories, 41 files
+
 
 
 ## Experiments Codebase
