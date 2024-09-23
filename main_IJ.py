@@ -26,7 +26,9 @@ import shutil
 
 
 if __name__ == '__main__':
-    ########### Setup
+###############################################################################
+#                               SETUP                                         #
+###############################################################################
     pycache_folder = "__pycache__"
     if os.path.exists(pycache_folder):
         shutil.rmtree(pycache_folder)
