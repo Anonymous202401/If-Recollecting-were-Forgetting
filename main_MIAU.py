@@ -173,7 +173,9 @@ def attack(args,net_target,net_learned,unl_loader,res_loader, dataset_test, unle
 
 if __name__ == '__main__':
 
-    ###################### SETUP ######################
+###############################################################################
+#                               SETUP                                         #
+###############################################################################
     pycache_folder = "__pycache__"
     if os.path.exists(pycache_folder):
         shutil.rmtree(pycache_folder)
