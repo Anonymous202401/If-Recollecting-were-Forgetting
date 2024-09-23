@@ -604,7 +604,7 @@ if __name__ == '__main__':
     forget_dataset = Subset(subdataset_train, indices_to_unlearn)
     remain_dataset = Subset(subdataset_train, remaining_indices)
 
-    new_data = get_non_overlapping_subsets(dataset_train, subdataset_train, 1000 , args.seed)
+    new_data = get_non_overlapping_subsets(dataset_train, subdataset_train,len(dataset_train) - len(subdataset_train) , args.seed)
     combined_data = ConcatDataset([subdataset_train, new_data])
     keep_bool = np.full(len(combined_data), False)
     keep_bool[:len(subdataset_train)] = True
