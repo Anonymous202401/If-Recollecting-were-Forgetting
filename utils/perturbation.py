@@ -78,20 +78,6 @@ def NoisedNetReturn(args, net, rho, epsilon, delta, n=1000, m=1):
     T =  n*(args.epochs+1)/args.batch_size ; B = math.ceil(n /args.batch_size )
     b =  2* args.lr * args.clip * (m/(args.batch_size)*(rho**T- args.lr_decay**(T))* rho**B * args.lr_decay**B /(rho**B- args.lr_decay**(B)) )
 
-########## Delete
-    rootpath0 = './log/Proposed/Bound/'
-    if not os.path.exists(rootpath0):
-        os.makedirs(rootpath0)
-    save_path = os.path.join(
-        rootpath0,
-        'Proposed_model_{}_data_{}_remove_{}_epoch_{}_seed{}_{}_{}_{}_{}.txt'.format(
-            args.model, args.dataset, m, args.epochs, args.lr, 
-            args.lr_decay, args.clip, args.batch_size, args.seed
-        )
-    )
-    with open(save_path, 'w') as file:
-        file.write(f"Bound: {b}\n")
-########## Delete
     if args.std == 0:
         sigma= calibrateAnalyticGaussianMechanism(epsilon, delta, GS=b, tol = 1.e-12)   
     else:
