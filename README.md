@@ -19,18 +19,24 @@ We first obtain the learned model and the unlearned models, which can be done us
 **Infinitesimal Jackknife method (Unofficial implementation)**:
 
         python3 -u main_IJ.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 42
-        
+
+All results are included in ./log.
+
 ### 2. Evaluate Distance
 We then evaluate the $L_2$ norm between unleaned model and retrained model:
 
         python3 -u main_eva.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05 --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 42
-        
+
+All results are included in ./results.
+
+
 ### 3. Membership Inference Attack
 Finally, we conduct the MIA (Membership Inference Attack) evaluation:
 
         python3 -u main_MIAU.py --model logistic --dataset mnist --epochs 15 --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0 --seed 42
         python3 -u main_MIAL.py --model logistic --dataset mnist --epochs 15 --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0 --seed 42
 
+All results are included in ./results.
 
 # Experiments Codebase
 This section contains the bash scripts to run all the experiments for the paper.
