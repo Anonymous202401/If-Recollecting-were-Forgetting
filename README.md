@@ -1,4 +1,4 @@
-This repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-free Online Model Updates Approach**".
+This temporary repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-free Online Model Updates Approach**".
 
 # Quick Start Guide
 ### 1. Model Learning and Unlearning
