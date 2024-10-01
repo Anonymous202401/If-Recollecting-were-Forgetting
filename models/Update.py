@@ -34,7 +34,6 @@ class DatasetSplit(Dataset):
 def train(step,args, net, dataset,learning_rate,info):
 
     # Ensure reproducibility of results, which may lead to a slight decrease in performance as it disables some optimizations.
-    # torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
 
     random.seed(args.seed)
