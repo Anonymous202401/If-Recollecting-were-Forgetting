@@ -25,7 +25,7 @@ import shutil
 
 
 if __name__ == '__main__':
-    ########### Setup
+    ########### Setup ###########
     pycache_folder = "__pycache__"
     if os.path.exists(pycache_folder):
         shutil.rmtree(pycache_folder)
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     w = net.state_dict()
 
 
-    ########### Model training
+    ########### Model training ###########
     # training
     acc_test = []
     loss_test = []
@@ -151,11 +151,8 @@ if __name__ == '__main__':
         print(" Epoch {:3d},Testing accuracy: {:.2f},Time Elapsed:  {:.2f}s \n".format(iter, acc_t, t_end - t_start))
 
         acc_test.append(acc_t.item())
-
-
-
-        
-    ########### Compute unlearning statistics
+    
+    ########### Compute unlearning statistics ###########
     all_indices = list(range(len(dataset_train)))
     print(len(dataset_train))
     indices_to_unlearn = random.sample(all_indices, k=args.num_forget)
@@ -177,10 +174,7 @@ if __name__ == '__main__':
         average_hessian_all = torch.load(save_path)
         # average_hessian_all = average_hessian_all + 0.01 * torch.eye(average_hessian_all.size(0), device=average_hessian_all.device)
 
-
-
-
-    ########### Unlearning
+    ########### Unlearning ###########
     print("(NU) Begin unlearning")
     average_hessian_forget=compute_hessian(args,copy.deepcopy(net).to(args.device),  Dataset2recollect, indices_to_unlearn)
     average_hessian_all = average_hessian_all.to(args.device)
@@ -207,7 +201,7 @@ if __name__ == '__main__':
 
 
 
-    ########### Save
+    ########### Save ###########
     # save unlearned model
     rootpath1 = './log/NU/Model/'
     if not os.path.exists(rootpath1):
