@@ -58,7 +58,7 @@ def Evaluate_Euclidean(args):
 
     print("Euclidean Distance saved to:", output_file_path)
 
-def Evaluate_EuclideanTEST(args):
+def Evaluate_Euclidean_ResNet(args):
     rootpath = './log'
     # Load model parameters
     proposed_model_path = rootpath + '/Proposed/Model/Proposed_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.pth'.format(args.model, args.dataset, args.num_forget, args.epochs, args.lr,args.lr_decay,args.clip,args.seed)
