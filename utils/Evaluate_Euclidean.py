@@ -46,7 +46,6 @@ def Evaluate_Euclidean(args):
 
     # save evaluation
     rootpath = './results/Euclidean/'
-    # filename = 'Evaluate_Euclidean_model_{}_data_{}_remove_{}_epoch_{}_seed{}.txt'.format(args.model, args.dataset, args.num_forget, args.epochs,args.seed)
     filename = 'Evaluate_Euclidean_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.txt'.format(args.model, args.dataset, args.num_forget, args.epochs,args.lr,args.lr_decay, args.clip,args.seed)
     output_file_path = os.path.expanduser(os.path.join(rootpath, filename))
     os.makedirs(rootpath, exist_ok=True)
@@ -99,7 +98,6 @@ def Evaluate_Euclidean_ResNet(args):
 
     # save evaluation
     rootpath = './results/Euclidean/'
-    # filename = 'Evaluate_Euclidean_model_{}_data_{}_remove_{}_epoch_{}_seed{}.txt'.format(args.model, args.dataset, args.num_forget, args.epochs, args.seed)
     filename = 'Evaluate_Euclidean_model_{}_data_{}_remove_{}_epoch_{}_lr_{}_lrdecay_{}_clip_{}_seed{}.txt'.format(args.model, args.dataset, args.num_forget, args.epochs,args.lr,args.lr_decay, args.clip,args.seed)
     output_file_path = os.path.expanduser(os.path.join(rootpath, filename))
     os.makedirs(rootpath, exist_ok=True)
