@@ -12,7 +12,7 @@ We first obtain the learned model and the unlearned models, which can be done us
 
         python3 -u main_retrain.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 42
 
-We commented out the evaluation of NS and IJ in utils/Evaluate_Euclidean.py, so if you're short on time, you can skip NS and IJ and directly evaluate our method.
+We commented out the evaluation of NS and IJ in utils/Evaluate_Euclidean.py, so you can skip NS and IJ and directly evaluate our proposed method.
 
 **Newton Step method (Unofficial implementation)**:
 
