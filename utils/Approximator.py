@@ -137,7 +137,6 @@ def getapproximator(args,img_size,Dataset2recollect):
         torch.cuda.synchronize()
         t_end = time.time()
         print("Computaion Time Elapsed:  {:.6f}s \n".format(t_end - t_start))
-    # print('Spectral Radius: {:.5f}'.format(rho))   
     del info,dataset
 
 
