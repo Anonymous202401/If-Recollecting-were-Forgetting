@@ -33,15 +33,9 @@ class DatasetSplit(Dataset):
 def compute_hessian(args, model, Dataset2recollect, indices):
     model.train()
     loss_func = nn.CrossEntropyLoss()
-    # step = 840
     step = 0 
-    # file_path = '/home/qiaoxinbao/If-recollecting-were-forgetting/Propsed/log/NU/statistics/average_hessian_lenet_fashion-mnist_120_42_step840.pth'
-    # total_hessian = torch.load(file_path)
     total_hessian = torch.zeros((sum(p.numel() for p in model.parameters()), sum(p.numel() for p in model.parameters())))
     total_hessian=total_hessian.to(args.device)
-    # image_0, label_0, index_0 = Dataset2recollect[indices[0]]
-    # total_hessian = torch.zeros_like(calc_hessian(args,loss_func(model(image_0.unsqueeze(0).to(args.device)),torch.tensor([label_0]).to(args.device)), model.parameters()))
-
 
     for i in indices:
         
