@@ -2,7 +2,7 @@ This temporary repository is the supplementary code of the paper "**Efficient an
 
 ![comparison](comparison.png "Exisiting Second-Order Certified Unlearning Schemes")
 <p align="center">
-**Existing Second-Order Certified Unlearning Schemes.**
+\textbf{Existing Second-Order Certified Unlearning Schemes.}
 </p>
 
 *In the left diagram*, the weighting factor $\omega=0$ represents the original empirical risk minimizer, while $\omega=-\frac{1}{n}$ indicates the retrained empirical risk minimizer. 
