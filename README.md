@@ -2,8 +2,8 @@ This temporary repository is the supplementary code of the paper "**Efficient an
 
 ![comparison](comparison.png "Exisiting Second-Order Certified Unlearning Schemes")
 **Existing Second-Order Certified Unlearning Schemes.** <br>
-*In the left diagram* (NS, IJ), the weighting factor $\omega=0$ represents the original ERM, while $\omega=-\frac{1}{n}$ indicates the retrained ERM. <br>
-*In the right diagram* (HF), the weighting factor $\omega=0$ represents the original model update, and $\omega=-1$ represents the retrained model update.
+*In the left figure* (**NS**, **IJ**), the weighting factor $\omega=0$ represents the original ERM, while $\omega=-\frac{1}{n}$ indicates the retrained ERM. <br>
+*In the right figure* (**HF**), the weighting factor $\omega=0$ represents the original update, and $\omega=-1$ represents the retrained update.
 
 # Quick Start Guide
 ### 1. Model Learning and Unlearning
