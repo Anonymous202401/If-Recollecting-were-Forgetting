@@ -1,5 +1,7 @@
 This temporary repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-free Online Model Updates Approach**".
 
+![comparison](comparison.png "Exisiting Second-Order Certified Unlearning Scheme")
+
 # Quick Start Guide
 ### 1. Model Learning and Unlearning
 We first obtain the learned model and the unlearned models, which can be done using the following commands:
