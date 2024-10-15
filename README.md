@@ -19,11 +19,11 @@ We first obtain the learned model and the unlearned models, which can be done us
 
 We commented out the evaluation of NS and IJ in utils/Evaluate_Euclidean.py, so you can skip NS and IJ and directly evaluate our proposed method (as calculating the Hessian takes a considerable amount of time). If you want to evaluate NS and IJ, please uncomment the code and execute the following commands:
 
-**Newton Step (NS) method (Unofficial implementation)**:
+**Newton Step method (Unofficial implementation)**:
 
         python3 -u main_NU.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 124
 
-**Infinitesimal Jackknife (IJ) method (Unofficial implementation)**:
+**Infinitesimal Jackknife method (Unofficial implementation)**:
 
         python3 -u main_IJ.py --model logistic --dataset mnist --epochs 15  --num_dataset 1000 --batch_size 32 --num_forget 50 --lr 0.05  --regularization 0.5 --lr_decay 0.995 --clip 5 --gpu 0  --seed 124
 
