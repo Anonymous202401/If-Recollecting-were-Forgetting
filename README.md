@@ -1,9 +1,9 @@
-This temporary repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-free Online Model Updates Approach**".
+This temporary repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-Free Online Model Updates Approach**".
 
 ![comparison](comparison.png "Exisiting Second-Order Certified Unlearning Schemes")
 **Existing Second-Order Certified Unlearning Schemes:** <br>
-- *In the left figure* (**NS**, **IJ**), the weighting factor $\omega=0$ represents the original Empirical Risk Minimizer , while $\omega=-\frac{1}{n}$ indicates the retrained Empirical Risk Minimizer . <br>
-- *In the right figure* (**HF**), the weighting factor $\omega=0$ represents the original Model Update, and $\omega=-1$ represents the retrained Model Update.
+- *In the left figure* (**NS**, **IJ** Method), the weighting factor $\omega=0$ represents the original Empirical Risk Minimizer , while $\omega=-\frac{1}{n}$ indicates the retrained Empirical Risk Minimizer . <br>
+- *In the right figure* (**HF** Method), the weighting factor $\omega=0$ represents the original Model Update, and $\omega=-1$ represents the retrained Model Update.
 
 # Quick Start Guide
 ### 1. Model Learning and Unlearning
