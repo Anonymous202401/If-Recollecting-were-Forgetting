@@ -1,9 +1,7 @@
 This temporary repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-free Online Model Updates Approach**".
 
 ![comparison](comparison.png "Exisiting Second-Order Certified Unlearning Schemes")
-<p align="center">
-<strong>Existing Second-Order Certified Unlearning Schemes.</strong>
-</p>
+**Existing Second-Order Certified Unlearning Schemes.** 
 *In the left diagram*, the weighting factor $\omega=0$ represents the original empirical risk minimizer, while $\omega=-\frac{1}{n}$ indicates the retrained empirical risk minimizer. 
 *In the right diagram*, the weighting factor $\omega=0$ represents the original model update, and $\omega=-1$ represents the retrained model update.
 
