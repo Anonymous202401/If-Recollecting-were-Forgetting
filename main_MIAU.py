@@ -376,6 +376,8 @@ if __name__ == '__main__':
     net_target_NU.load_state_dict(torch.load(NU_model_path))
     net_target_Proposed.load_state_dict(torch.load(Proposed_model_path))
     if args.application ==True:  
+        args.std = 0.0025  ## ε_LR ≈ 2
+        # args.std = 0.0265   ## ε_CNN ≈ 120
         w = NoisedNetReturn(args, net=copy.deepcopy(net_target_Proposed).to(args.device), rho=1, epsilon=args.epsilon, delta=args.delta, n=args.num_dataset, m=1)
         net_target_Proposed.load_state_dict(w)
 
