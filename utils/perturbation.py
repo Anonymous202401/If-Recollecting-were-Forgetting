@@ -76,8 +76,8 @@ def calibrateAnalyticGaussianMechanism(epsilon, delta, GS, tol = 1.e-12):
 
 def NoisedNetReturn(args, net, rho, epsilon, delta, n=1000, m=1):
     T =  n*(args.epochs+1)/args.batch_size ; B = math.ceil(n /args.batch_size )
-    # b =  2* args.lr * args.clip * (m/(args.batch_size)*(rho**T- args.lr_decay**(T))* rho**B * args.lr_decay**B /(rho**B- args.lr_decay**(B)) )
-    b =  2* args.lr * args.clip * (rho**T- args.lr_decay**(2*T))
+    b =  2* (args.lr**2) * args.clip *((rho**T-args.lr_decay**(T)/(rho- args.lr_decay))-(rho**T-args.lr_decay**(2*T)/(rho-args.lr_decay**2)))*(1-args.lr_decay)+2*args.lr*args.clip*(m/(args.batch_size)*(rho**T-args.lr_decay**(T))/(rho**B-args.lr_decay**(B))*rho**B*args.lr_decay**B)
+    # b =  2* args.lr * args.clip * (rho**T- args.lr_decay**(2*T))
 
     if args.std == 0:
         sigma= calibrateAnalyticGaussianMechanism(epsilon, delta , GS=b, tol = 1.e-12)   
