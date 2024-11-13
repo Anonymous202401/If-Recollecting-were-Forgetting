@@ -3,6 +3,10 @@
 
 ## Experimental Results (Rebuttal)
 
+### 
+![Learning-Unlearning Tradeoff]((un)learn_Tradeoff.svg "trade-off between smaller approximation error and insufficient  model training caused by step size")
+
+
 ## Quick Start Guide (Rebuttal)
 
 This temporary repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-Free Online Model Updates Approach**".
