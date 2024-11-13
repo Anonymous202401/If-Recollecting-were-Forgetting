@@ -1,9 +1,9 @@
 # Results During Rebuttal Period
 
 
-## Experimental Results
+## Experimental Results (Rebuttal)
 
-## Quick Start Guide
+## Quick Start Guide (Rebuttal)
 
 This temporary repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-Free Online Model Updates Approach**".
 
