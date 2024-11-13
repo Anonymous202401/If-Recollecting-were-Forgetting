@@ -1,4 +1,4 @@
-# Experimental Results during Rebuttal period
+# Results during Rebuttal period
 
 ## Experimental Results
 
