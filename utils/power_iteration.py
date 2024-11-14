@@ -4,7 +4,7 @@ import random
 import torch.nn.functional as F
 
 
-def spectral_radius(args,loss_batch, net):
+def spectral_radius(args,loss_batch, net,t):
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -21,12 +21,12 @@ def spectral_radius(args,loss_batch, net):
     v_old = torch.cat([vec.reshape(-1) for vec in v])
 
     params = list(net.parameters())
-    adjusted_params = [param - args.lr * grad_param for param, grad_param in zip(params, grad_params)]
+    # adjusted_params = [param - args.lr * grad_param for param, grad_param in zip(params, grad_params)]
     # adjusted_params = [args.lr * (args.lr_decay**t) * grad_param for grad_param in  grad_params]
-    adjusted_params = grad_params
+    adjusted_params = [grad / args.batch_size for grad in grad_params]
 
     e_value = 0
-    for i in range(2):
+    for i in range(100):
         u = torch.autograd.grad(adjusted_params , net.parameters(), grad_outputs=v, retain_graph=True)
         u_flat = torch.cat([grad.reshape(-1) for grad in u])
         grad_norm = torch.norm(torch.cat([grad.reshape(-1) for grad in u]))
