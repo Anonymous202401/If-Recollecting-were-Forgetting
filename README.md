@@ -1,9 +1,12 @@
 # Results During Rebuttal Period
 
+## Experiments suggested by  Reviewer ia1D
 
-## Experimental Results (Rebuttal)
+##  Quick Start Guide
 
-### 
+
+## Experiments suggested by  Reviewer t2wR
+
 ![Learning-Unlearning Tradeoff]((un)learn_Tradeoff.svg "trade-off between smaller approximation error and insufficient  model training caused by step size")
 
 **Configuration:** We keep the other hyperparameters fixed and adjust the learning rate from 0.001 to 0.31.
@@ -12,11 +15,9 @@
 
 Therefore, based on the above Figure, we conclude that under this setup, there exists an optimal step size that achieves the best test accuracy while maintaining a small approximation error. However, we are not aware of any optimization problem yielding the results shown in the graph above. When $\eta_1 > \eta_2$, the optimal learning rate must be set to $\eta_2$, which, although rare, inevitably leads to insufficient training.
 
-## Quick Start Guide (Rebuttal)
+##  Quick Start Guide
 
-bash Ablation.sh
-
-
+bash Ablation_Re.sh
 
 # Introduction
 
