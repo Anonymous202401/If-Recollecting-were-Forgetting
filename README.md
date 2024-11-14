@@ -19,6 +19,10 @@ Therefore, based on the above Figure, we conclude that under this setup, there e
 
 bash Ablation_Re.sh
 
+------
+
+
+
 # Introduction
 
 This temporary repository is the supplementary code of the paper "**Efficient and Generalizable Second-Order Unlearning: A Hessian-Free Online Model Updates Approach**".
