@@ -2,7 +2,7 @@
 
 ## Experiments suggested by  Reviewer ia1D
 
-##  Quick Start Guide
+##  Quick Start
 
 
 ## Experiments suggested by  Reviewer t2wR
@@ -15,7 +15,7 @@
 
 Therefore, based on the above Figure, we conclude that under this setup, there exists an optimal step size that achieves the best test accuracy while maintaining a small approximation error. However, we are not aware of any optimization problem yielding the results shown in the graph above. When $\eta_1 > \eta_2$, the optimal learning rate must be set to $\eta_2$, which, although rare, inevitably leads to insufficient training.
 
-##  Quick Start Guide
+##  Quick Start
 
 bash Ablation_Re.sh
 
