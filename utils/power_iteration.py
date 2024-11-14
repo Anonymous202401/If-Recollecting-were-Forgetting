@@ -26,7 +26,7 @@ def spectral_radius(args,loss_batch, net,t):
     adjusted_params = [grad / args.batch_size for grad in grad_params]
 
     e_value = 0
-    for i in range(100):
+    for i in range(1000):
         u = torch.autograd.grad(adjusted_params , net.parameters(), grad_outputs=v, retain_graph=True)
         u_flat = torch.cat([grad.reshape(-1) for grad in u])
         grad_norm = torch.norm(torch.cat([grad.reshape(-1) for grad in u]))
