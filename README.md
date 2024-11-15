@@ -3,7 +3,7 @@
 ## Experiments suggested by  Reviewer ia1D
 
 We have conducted experiments on additional datasets, including SVHN, Adult, Titanic, and Cancer Disease, for tasks such as house number recognition, income prediction, passenger survival, and cancer disease prediction, respectively.
-Due to the emphasis on ensuring the diversity of the datasets, we did not measure the computational and storage overhead. Below are our experimental results.
+Below are our experimental results.
 
 
 
