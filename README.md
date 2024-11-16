@@ -2,16 +2,17 @@
 
 ## Experiments suggested by  Reviewer ia1D
 
-We have conducted experiments with a multilayer perceptron (MLP) with two fully connected layers on additional datasets, including **Wine**, **Adult**, **IMDB**, and **Cancer Disease**, for tasks such as wine quality, income prediction, sentiment analysis of movie reviews, and cancer disease prediction, respectively.
+We have conducted experiments with a multilayer perceptron (MLP) with two fully connected layers on additional datasets, including **Adult**, **Wine**, **Credit**, and **Cancer Disease**, for tasks such as income prediction, wine quality, credit card fraud detection, and cancer disease prediction, respectively.
 Below are our experimental results.
 
 
 ##  Quick Start
 
-        bash IMDB.sh
+        bash Adult.sh
+        bash Wine.sh
         bash Credit.sh
         bash Cancer.sh
-        bash Adult.sh
+        
 
 ## Experiments suggested by  Reviewer t2wR
 
