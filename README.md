@@ -8,10 +8,10 @@ Below are our experimental results.
 
 ##  Quick Start
 
-bash IMDB.sh
-bash Credit.sh
-bash Cancer.sh
-bash Adult.sh
+        bash IMDB.sh
+        bash Credit.sh
+        bash Cancer.sh
+        bash Adult.sh
 
 ## Experiments suggested by  Reviewer t2wR
 
@@ -29,7 +29,7 @@ Overall, since our method is less affected by the step size when below the thres
 
 ##  Quick Start
 
-bash Ablation_Re.sh
+        bash Ablation_Re.sh
 
 ------
 
