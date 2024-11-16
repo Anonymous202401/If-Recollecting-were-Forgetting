@@ -2,7 +2,7 @@
 
 ## Experiments suggested by  Reviewer ia1D
 
-We have conducted experiments on additional datasets, including creditcard, Adult, Titanic, and Cancer Disease, for tasks such as house number recognition, income prediction, passenger survival, and cancer disease prediction, respectively.
+We have conducted experiments on additional datasets, including creditcard, Adult, IMDB, and Cancer Disease, for tasks such as house number recognition, income prediction, sentiment analysis of movie reviews, and cancer disease prediction, respectively.
 Below are our experimental results.
 
 
