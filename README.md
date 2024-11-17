@@ -2,16 +2,16 @@
 
 ## Experiments suggested by  Reviewer ia1D
 
-We have conducted experiments with a multilayer perceptron (MLP) with two fully connected layers on additional datasets, including **Wine**, **Adult**, **Credit**, and **Cancer Disease**, for tasks such as wine quality prediction, income classification, credit card fraud detection, and cancer disease prediction, respectively.
+We have conducted experiments with a multilayer perceptron (MLP) with two fully connected layers on additional datasets from [UCI Machine Learning Repository](https://archive.ics.uci.edu/), including **[HAPT](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones)**, **[Wine](https://archive.ics.uci.edu/dataset/186/wine+quality)**, **[Adult](https://archive.ics.uci.edu/dataset/2/adult)**,  and **[Obesity](https://archive.ics.uci.edu/dataset/544/estimation+of+obesity+levels+based+on+eating+habits+and+physical+condition)**, for tasks such as human activity Recognition, income, wine quality, and estimation of obesity levels, respectively.
 Below are our experimental results.
 
 
 ##  Quick Start
 
-        bash Adult.sh
+        bash HAPT.sh
         bash Wine.sh
-        bash Credit.sh
-        bash Cancer.sh
+        bash Adult.sh
+        bash Obesity.sh
         
 
 ## Experiments suggested by  Reviewer t2wR
