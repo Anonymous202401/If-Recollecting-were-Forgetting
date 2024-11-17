@@ -52,10 +52,10 @@ Due to time constraints and the considerable computation time required for the H
 
 ##  Quick Start
 
-        bash Wine.sh
-        bash HAPT.sh
-        bash Adult.sh
-        bash Obesity.sh
+        bash ./codebase/Wine.sh
+        bash ./codebase/HAPT.sh
+        bash ./codebase/Adult.sh
+        bash ./codebase/Obesity.sh
         
 
 <a id="reviewer-t2wR"></a>
@@ -133,11 +133,11 @@ All results are included in ./results.
 # Experiments Codebase
 This section contains the bash scripts to run all the experiments for the paper.
 
-    bash MNIST.sh
-    bash FMNIST.sh
-    bash Cifar.sh
-    bash CelebA.sh
-    bash LFW.sh
-    bash MIAL.sh
-    bash MIAU.sh
-    bash Ablation.sh
+    bash ./codebase/MNIST.sh
+    bash ./codebase/FMNIST.sh
+    bash ./codebase/Cifar.sh
+    bash ./codebase/CelebA.sh
+    bash ./codebase/LFW.sh
+    bash ./codebase/MIAL.sh
+    bash ./codebase/MIAU.sh
+    bash ./codebase/Ablation.sh
