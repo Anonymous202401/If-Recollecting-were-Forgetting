@@ -13,9 +13,9 @@ Below are our experimental results.
 
 | Remove 10%    Wine Data | Distance (±std)                    | Unlearning time (Sec) | Storage (MB) | Precomputing time (Sec) |
 | -------------------- | -------------------------- | ------------------------ | ------------ | -------------------------- |
-| **IJ**               | 0.652394(±0.47713592)      | 0.31                     | 9.12 MB      | 155.01                     |
-| **NU**               | 0.882236(±1.607668449)     | 14.34                    | 9.12 MB      | 153.16                     |
-| **Proposed**         | **0.08735 (±0.022903825)** | **0.0004**               | **1.06 MB**  | **11.56**                  |
+| **IJ**               | 0.652394(±0.47713592)      | 0.31                     | 9.12      | 155.01                     |
+| **NU**               | 0.882236(±1.607668449)     | 14.34                    | 9.12      | 153.16                     |
+| **Proposed**         | **0.08735 (±0.022903825)** | **0.0004**               | **1.06**  | **11.56**                  |
 
 Due to time constraints and the considerable computation time required for the Hessian, we are currently presenting only the results of our proposed method. Results from other algorithms will be released gradually.
 
