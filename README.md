@@ -17,7 +17,7 @@ Below are our experimental results.
 | **NU**               | 0.882236(±1.607668449)     | 14.34                    | 9.12 MB      | 153.16                     |
 | **Proposed**         | **0.08735 (±0.022903825)** | **0.0004**               | **1.06 MB**  | **11.56**                  |
 
-
+Due to time constraints and the computation time for the Hessian being relatively long, we are currently only presenting the results of our proposed method. Results from other algorithms will be gradually released.
 
 ##  Quick Start
 
