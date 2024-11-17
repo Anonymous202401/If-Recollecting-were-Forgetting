@@ -75,7 +75,7 @@ Overall, since our method is less affected by the step size when below the thres
 
 ##  Quick Start
 
-        bash Ablation_Re.sh
+        bash ./codebase/Ablation_Re.sh
 
 ------
 
