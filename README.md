@@ -21,8 +21,8 @@ Due to time constraints and the considerable computation time required for the H
 
 ##  Quick Start
 
-        bash HAPT.sh
         bash Wine.sh
+        bash HAPT.sh
         bash Adult.sh
         bash Obesity.sh
         
