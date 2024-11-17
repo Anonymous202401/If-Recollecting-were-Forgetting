@@ -17,7 +17,7 @@ Below are our experimental results.
 | **NU**       | 0.713996(±0.663479114)      | 7.55                   | 9.12          | 153.16                  |
 | **Proposed** | **0.042583 (±0.013055867)** | **0.0004**             | **1.06**      | **11.56**               |
 
-| Remove 10%    Wine Data | Distance (±std)            | Unlearning time (Sec) | Storage (MB) | Precomputing time (Sec) |
+| Remove 10%   | Distance (±std)            | Unlearning time (Sec) | Storage (MB) | Precomputing time (Sec) |
 | ----------------------- | -------------------------- | --------------------- | ------------ | ----------------------- |
 | **IJ**                  | 0.652394(±0.47713592)      | 0.31                  | 9.12         | 155.01                  |
 | **NU**                  | 0.882236(±1.607668449)     | 14.34                 | 9.12         | 153.16                  |
