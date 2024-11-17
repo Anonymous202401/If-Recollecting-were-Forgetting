@@ -2,7 +2,7 @@
 
 ## Experiments suggested by  Reviewer ia1D
 
-We have conducted experiments with a multilayer perceptron (MLP) with two fully connected layers on additional datasets from [UCI Machine Learning Repository](https://archive.ics.uci.edu/), including **[Wine](https://archive.ics.uci.edu/dataset/186/wine+quality)**, **[HAPT](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones)**, **[Adult](https://archive.ics.uci.edu/dataset/2/adult)**,  and **[Obesity](https://archive.ics.uci.edu/dataset/544/estimation+of+obesity+levels+based+on+eating+habits+and+physical+condition)**, for tasks such as wine quality classification, human activity Recognition, income classification, and estimation of obesity levels, respectively.
+We have conducted experiments with a multilayer perceptron (MLP) with two fully connected layers on additional datasets from [UCI Machine Learning Repository](https://archive.ics.uci.edu/), including **[Wine](https://archive.ics.uci.edu/dataset/186/wine+quality)**, **[HAPT](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones)**, **[Adult](https://archive.ics.uci.edu/dataset/2/adult)**,  and **[Obesity](https://archive.ics.uci.edu/dataset/544/estimation+of+obesity+levels+based+on+eating+habits+and+physical+condition)**, for tasks such as wine quality classification, human activity recognition, income classification, and estimation of obesity levels, respectively.
 Below are our experimental results.
 
 | Remove 5%    Wine Data | Distance (±std)                   | Unlearning time  (Second) | Storage  (MB) | Precomputing time (Second) |
