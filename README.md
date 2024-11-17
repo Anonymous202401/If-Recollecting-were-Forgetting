@@ -5,19 +5,46 @@
 We have conducted experiments with a multilayer perceptron (MLP) with two fully connected layers on additional datasets from [UCI Machine Learning Repository](https://archive.ics.uci.edu/), including **[Wine](https://archive.ics.uci.edu/dataset/186/wine+quality)**, **[HAPT](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones)**, **[Adult](https://archive.ics.uci.edu/dataset/2/adult)**,  and **[Obesity](https://archive.ics.uci.edu/dataset/544/estimation+of+obesity+levels+based+on+eating+habits+and+physical+condition)**, for tasks such as wine quality classification, human activity recognition, income classification, and estimation of obesity levels, respectively.
 Below are our experimental results.
 
-| Remove 5%    Wine Data | Distance (±std)                   | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
-| ------------------- | --------------------------- | ------------------------- | ------------- | -------------------------- |
-| **IJ**              | 1.328685(±2.684761113)      | 0.31                      | 9.12          | 155.01                     |
-| **NU**              | 0.713996(±0.663479114)      | 7.55                      | 9.12          | 153.16                     |
-| **Proposed**        | **0.042583 (±0.013055867)** | **0.0004**                | **1.06**     | **11.56**                  |
+### Wine Dataset
 
-| Remove 10%    Wine Data | Distance (±std)                    | Unlearning time (Sec) | Storage (MB) | Precomputing time (Sec) |
-| -------------------- | -------------------------- | ------------------------ | ------------ | -------------------------- |
-| **IJ**               | 0.652394(±0.47713592)      | 0.31                     | 9.12      | 155.01                     |
-| **NU**               | 0.882236(±1.607668449)     | 14.34                    | 9.12      | 153.16                     |
-| **Proposed**         | **0.08735 (±0.022903825)** | **0.0004**               | **1.06**  | **11.56**                  |
+| Remove 5%    | Distance (±std)             | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
+| ------------ | --------------------------- | ---------------------- | ------------- | ----------------------- |
+| **IJ**       | 1.328685(±2.684761113)      | 0.31                   | 9.12          | 155.01                  |
+| **NU**       | 0.713996(±0.663479114)      | 7.55                   | 9.12          | 153.16                  |
+| **Proposed** | **0.042583 (±0.013055867)** | **0.0004**             | **1.06**      | **11.56**               |
 
-Due to time constraints and the considerable computation time required for the Hessian, we are currently presenting only the results of our proposed method. Results from other algorithms will be released gradually.
+| Remove 10%    Wine Data | Distance (±std)            | Unlearning time (Sec) | Storage (MB) | Precomputing time (Sec) |
+| ----------------------- | -------------------------- | --------------------- | ------------ | ----------------------- |
+| **IJ**                  | 0.652394(±0.47713592)      | 0.31                  | 9.12         | 155.01                  |
+| **NU**                  | 0.882236(±1.607668449)     | 14.34                 | 9.12         | 153.16                  |
+| **Proposed**            | **0.08735 (±0.022903825)** | **0.0004**            | **1.06**     | **11.56**               |
+
+Due to time constraints and the considerable computation time required for the Hessian, we are currently presenting only the results of our proposed method for the following datasets. Results from other algorithms will be released gradually.
+
+### HAPT Dataset
+
+| Remove 5%    | Distance (±std) | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
+| ------------ | --------------- | ---------------------- | ------------- | ----------------------- |
+| **IJ**       |                 |                        |               |                         |
+| **NU**       |                 |                        |               |                         |
+| **Proposed** |                 |                        |               |                         |
+
+### Adult Dataset
+
+| Remove 5%    | Distance (±std) | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
+| ------------ | --------------- | ---------------------- | ------------- | ----------------------- |
+| **IJ**       |                 |                        |               |                         |
+| **NU**       |                 |                        |               |                         |
+| **Proposed** |                 |                        |               |                         |
+
+### Obesity Dataset
+
+| Remove 5%    | Distance (±std) | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
+| ------------ | --------------- | ---------------------- | ------------- | ----------------------- |
+| **IJ**       |                 |                        |               |                         |
+| **NU**       |                 |                        |               |                         |
+| **Proposed** |                 |                        |               |                         |
+
 
 ##  Quick Start
 
