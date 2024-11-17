@@ -23,6 +23,20 @@ Below are our experimental results.
 | **NU**                  | 0.882236(±1.607668449)     | 14.34                 | 9.12         | 153.16                  |
 | **Proposed**            | **0.08735 (±0.022903825)** | **0.0004**            | **1.06**     | **11.56**               |
 
+### Obesity Dataset
+
+| Remove 5%    | Distance (±std) | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
+| ------------ | --------------- | ---------------------- | ------------- | ----------------------- |
+| **IJ**       |                 |                        |               |                         |
+| **NU**       |                 |                        |               |                         |
+| **Proposed** |                 |                        |               |                         |
+
+| Remove 10%    | Distance (±std) | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
+| ------------ | --------------- | ---------------------- | ------------- | ----------------------- |
+| **IJ**       |                 |                        |               |                         |
+| **NU**       |                 |                        |               |                         |
+| **Proposed** |                 |                        |               |                         |
+
 Due to time constraints and the considerable computation time required for the Hessian, we are currently presenting only the results of our proposed method for the following datasets. Results from other algorithms will be released gradually.
 
 ### HAPT Dataset
@@ -41,13 +55,6 @@ Due to time constraints and the considerable computation time required for the H
 | **NU**       |                 |                        |               |                         |
 | **Proposed** |                 |                        |               |                         |
 
-### Obesity Dataset
-
-| Remove 5%    | Distance (±std) | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
-| ------------ | --------------- | ---------------------- | ------------- | ----------------------- |
-| **IJ**       |                 |                        |               |                         |
-| **NU**       |                 |                        |               |                         |
-| **Proposed** |                 |                        |               |                         |
 
 
 ##  Quick Start
