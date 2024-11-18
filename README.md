@@ -6,7 +6,7 @@
 <a id="reviewer-ia1d"></a>
 ## Experiments suggested by  Reviewer ia1D
 
-To ensure **diversity of dataset selection**, we have conducted experiments with a multilayer perceptron (MLP) with an input layer, ReLU, dropout, and a hidden layer on additional datasets from [UCI Machine Learning Repository](https://archive.ics.uci.edu/), including **[Wine](https://archive.ics.uci.edu/dataset/186/wine+quality)**, **[HAPT](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones)**, **[Adult](https://archive.ics.uci.edu/dataset/2/adult)**,  and **[Obesity](https://archive.ics.uci.edu/dataset/544/estimation+of+obesity+levels+based+on+eating+habits+and+physical+condition)**, for tasks such as wine quality classification, human activity recognition, income classification, and estimation of obesity levels, respectively.
+To ensure **diversity of dataset selection**, we have conducted experiments with a multilayer perceptron (MLP) with an input layer, ReLU, dropout, and a hidden layer on additional datasets from [UCI Machine Learning Repository](https://archive.ics.uci.edu/), including **[Wine](https://archive.ics.uci.edu/dataset/186/wine+quality)**, **[Obesity](https://archive.ics.uci.edu/dataset/544/estimation+of+obesity+levels+based+on+eating+habits+and+physical+condition)**, **[Adult](https://archive.ics.uci.edu/dataset/2/adult)**, and **[HAPT](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones)**, for tasks such as wine quality classification, estimation of obesity levels, income classification, and human activity recognition, respectively.
 Below are our experimental results.
 
 ### Wine Dataset
