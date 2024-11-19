@@ -33,9 +33,9 @@ Below are our experimental results.
 
 | Remove 10%   | Distance (±std)            | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
 | ------------ | -------------------------- | ---------------------- | ------------- | ----------------------- |
-| **IJ**       | 1.183618(±0.206143857)     | 1.98                   | 14.21         | 2,240.16                |
-| **NU**       | 1.35791(±0.532566905)      | 212.66                 | 14.21         | 2,228.83                |
-| **Proposed** | **0.834299(±0.119566818)** | **0.0005**             | **13.23**     | **102.06**              |
+| **IJ**       | 1.17544(±0.189422494)      | 1.98                   | 14.21         | 2,240.16                |
+| **NU**       | 1.350512(±0.486558709)     | 212.66                 | 14.21         | 2,228.83                |
+| **Proposed** | **0.828225(±0.110325879)** | **0.0005**             | **13.23**     | **102.06**              |
 
 Due to time constraints and the considerable computation time required for the Hessian, we are currently presenting only the results of our proposed method for the following datasets. Results from other algorithms will be released gradually.
 
@@ -43,8 +43,8 @@ Due to time constraints and the considerable computation time required for the H
 
 | Remove 5%    | Distance (±std) | Unlearning time  (Sec) | Storage  (GB) | Precomputing time (Sec) |
 | ------------ | --------------- | ---------------------- | ------------- | ----------------------- |
-| **IJ**       |                 |                        |              |                         |
-| **NU**       |                 |                        |              |                         |
+| **IJ**       |                 |                        | 5             |                         |
+| **NU**       |                 |                        | 5             |                         |
 | **Proposed** |                 |                        | **1.01**      |                         |
 
 ### HAPT Dataset
@@ -54,7 +54,6 @@ Due to time constraints and the considerable computation time required for the H
 | **IJ**       |                 |                        |               |                         |
 | **NU**       |                 |                        |               |                         |
 | **Proposed** |                 |                        |               |                         |
-
 
 
 
