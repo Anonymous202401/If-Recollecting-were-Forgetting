@@ -21,39 +21,37 @@ Below are our experimental results.
 | ------------ | -------------------------- | --------------------- | ------------ | ----------------------- |
 | **IJ**       | 0.652394(±0.47713592)      | 0.31                  | 9.12         | 155.01                  |
 | **NU**       | 0.882236(±1.607668449)     | 14.34                 | 9.12         | 153.16                  |
-| **Proposed** | **0.08735 (±0.02290383)** | **0.0004**            | **1.06**     | **11.56**               |
+| **Proposed** | **0.08735 (±0.022903825)** | **0.0004**            | **1.06**     | **11.56**               |
 
 ### Obesity Dataset
 
 | Remove 5%    | Distance (±std)            | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
 | ------------ | -------------------------- | ---------------------- | ------------- | ----------------------- |
-| **IJ**       | 0.933369(±0.244350937)     | 3.51                   | 14.21         | 2,240.16                |
+| **IJ**       | 0.933369(±0.244350937)     | 1.98                   | 14.21         | 2,240.16                |
 | **NU**       | 0.913421(±0.214602689)     | 106.50                 | 14.21         | 2,228.83                |
-| **Proposed** | **0.584722(±0.148974162)** | **0.0005**             | **13.23**     | **102.06**              |
+| **Proposed** | **0.584722(±0.148974162)** | **0.0004**             | **13.23**     | **102.06**              |
 
 | Remove 10%   | Distance (±std)            | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
 | ------------ | -------------------------- | ---------------------- | ------------- | ----------------------- |
 | **IJ**       | 1.17544(±0.189422494)      | 1.98                   | 14.21         | 2,240.16                |
 | **NU**       | 1.350512(±0.486558709)     | 212.66                 | 14.21         | 2,228.83                |
-| **Proposed** | **0.828225(±0.110325879)** | **0.0005**             | **13.23**     | **102.06**              |
+| **Proposed** | **0.828225(±0.110325879)** | **0.0004**             | **13.23**     | **102.06**              |
 
 Due to time constraints and the considerable computation time required for the Hessian, we are currently presenting only the results of our proposed method for the following datasets. Results from other algorithms will be released gradually.
 
-### Adult Dataset
-
-| Remove 5%    | Distance (±std) | Unlearning time  (Sec) | Storage  (GB) | Precomputing time (Sec) |
-| ------------ | --------------- | ---------------------- | ------------- | ----------------------- |
-| **IJ**       |                 |                        | 5             |                         |
-| **NU**       |                 |                        | 5             |                         |
-| **Proposed** |                 |                        | **1.01**      |                         |
-
 ### HAPT Dataset
 
-| Remove 5%    | Distance (±std) | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
-| ------------ | --------------- | ---------------------- | ------------- | ----------------------- |
-| **IJ**       |                 |                        |               |                         |
-| **NU**       |                 |                        |               |                         |
-| **Proposed** |                 |                        |               |                         |
+| Remove 5%    | Distance (±std)        | Unlearning time  (Sec) | Storage  (GB) | Precomputing time (Sec) |
+| ------------ | ---------------------- | ---------------------- | ------------- | ----------------------- |
+| **Proposed** | 0.126206(±0.092829542) | 0.0006                 | 1.01          | 5,772.59                |
+
+### Adult Dataset
+
+| Remove 5%    | Distance (±std)        | Unlearning time  (Sec) | Storage  (MB) | Precomputing time (Sec) |
+| ------------ | ---------------------- | ---------------------- | ------------- | ----------------------- |
+| **Proposed** | 1.852435(±0.080551984) | 0.0005                 | 258.01        | 1,153.98                |
+
+
 
 
 
