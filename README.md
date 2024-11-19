@@ -66,6 +66,8 @@ Due to time constraints and the considerable computation time required for the H
 <a id="reviewer-t2wR"></a>
 ## Experiments suggested by  Reviewer t2wR
 
+To investigate **the tradeoff between learning and unlearning**, we conducted the following experiment.
+
 ![Learning-Unlearning Tradeoff]((un)learn_Tradeoff.svg "Analysis between smaller approximation error and insufficient  model training caused by step size")
 
 **Configuration:** We conduct experiment on MNIST and keep the other hyperparameters fixed and adjust the learning rate from 0.001 to 0.31.
